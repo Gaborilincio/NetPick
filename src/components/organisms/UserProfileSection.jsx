@@ -2,7 +2,7 @@ import React from 'react';
 import Container from '../atoms/Container';
 import Row from '../atoms/Row';
 import Col from '../atoms/Col';
-import ProfileSidebar from './ProfileSideBar';
+import ProfileSidebar from './ProfileSidebar';
 import ProfileContent from './ProfileContent';
 
 function UserProfileSection({ user, pedidosRecientes, onEditProfile, onLogout }) {
@@ -26,5 +26,6 @@ function UserProfileSection({ user, pedidosRecientes, onEditProfile, onLogout })
     </Container>
   );
 }
+
 
 export default UserProfileSection;
