@@ -1,0 +1,41 @@
+.editar-perfil-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.editar-perfil-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.editar-perfil-titulo {
+  color: #2c3e50;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.editar-perfil-boton {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+}
+
+.editar-perfil-boton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.editar-perfil-boton-primario {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+}
+
+.editar-perfil-boton-secundario {
+  border: 2px solid #6c757d;
+  color: #6c757d;
+}

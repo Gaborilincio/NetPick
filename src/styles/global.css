@@ -1,0 +1,30 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.centro {
+  text-align: center;
+}
+
+.card-custom {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.card-custom:hover {
+  background-color: #616161;
+  cursor: pointer;
+}
+
+.hover-underline:hover {
+  text-decoration: underline;
+}   

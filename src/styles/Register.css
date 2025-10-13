@@ -1,0 +1,54 @@
+.registro-container {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.registro-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border: none;
+}
+
+.registro-titulo {
+  color: #2c3e50;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.registro-form {
+  padding: 0 1rem;
+}
+
+.registro-boton {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.registro-boton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
+}
+
+.registro-enlace {
+  color: #74b9ff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.registro-enlace:hover {
+  color: #0984e3;
+}
+
+.registro-grupo {
+  margin-bottom: 1rem;
+}

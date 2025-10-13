@@ -1,0 +1,56 @@
+.pie-pagina {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #ecf0f1;
+  padding: 3rem 0 1rem;
+  margin-top: 4rem;
+  border-top: 4px solid #e74c3c;
+}
+
+.pie-pagina .nombre-empresa {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.pie-pagina .descripcion-empresa {
+  color: #bdc3c7 !important;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.pie-pagina .titulo-seccion {
+  font-size: 1.2rem;
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.pie-pagina .enlace-rapido {
+  color: #bdc3c7 !important;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+  padding: 0.25rem 0;
+}
+
+.pie-pagina .enlace-rapido:hover {
+  color: #ffffff !important;
+  transform: translateX(5px);
+}
+
+.pie-pagina .informacion-contacto {
+  color: #bdc3c7 !important;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.pie-pagina .texto-derechos {
+  color: #95a5a6 !important;
+  font-size: 0.85rem;
+}
+
+.pie-pagina .linea-divisoria {
+  border-color: #7f8c8d;
+  margin: 2rem 0 1rem;
+}
