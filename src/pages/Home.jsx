@@ -1,40 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from '../components/atoms/Container';
-import CategoryGrid from '../components/molecules/CategoryGrid';
+import CategoryGrid from '../components/molecules/CategoryGrid'; 
 import '../styles/Home.css';
+import { ProductService } from '../services/ProductService'; 
 
 function Home() {
-  const categories = [
-    {
-      title: "Hogar",
-      image: "/img/miniaturaHogar.webp",
-      description: "Comienza por renovar los espacios de tu hogar y dar un nuevo aire en este",
-      link: "/category/hogar"
-    },
-    {
-      title: "Tecnología", 
-      image: "/img/miniaturaTecnologia.webp",
-      description: "Productos de ultima generación, descuentos y más ¿Que esperas? Entra Ya!",
-      link: "/category/tecnologia"
-    },
-    {
-      title: "Accesorios",
-      image: "/img/miniaturaAccesorios.webp", 
-      description: "Descubre una gran variedad de Accesorios.",
-      link: "/category/accesorios"
-    },
-    {
-      title: "Mascotas",
-      image: "/img/miniaturaHogar.webp",
-      description: "¡Todo lo que tu mascota necesita! Alimento, entretención, casas y más.",
-      link: "/category/mascotas"
-    }
-  ];
+  const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await ProductService.getAllProducts();
+      const mappedProducts = data.map(producto => ({
+        title: producto.nombre,           
+        image: producto.linkImagen,       
+        description: `Precio: $${producto.precio} - ${producto.descripcion}`, 
+        link: `/product/${producto.idProducto}` 
+      }));
+
+      setProducts(mappedProducts);
+    };
+
+    fetchProducts();
+  }, []);
   return (
     <div className="homeContainer">
       <Container>
-        <CategoryGrid categories={categories} />
+        {}
+        <h2 style={{textAlign: 'center', margin: '20px 0'}}>Nuestros Productos Destacados</h2>
+        
+        {}
+        {products.length > 0 ? (
+           <CategoryGrid categories={products} />
+        ) : (
+           <p style={{textAlign: 'center'}}>Cargando productos del servidor...</p>
+        )}
       </Container>
     </div>
   );
