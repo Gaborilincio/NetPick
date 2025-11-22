@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import { AuthService } from '../services/AuthService'; 
-
 const AUTH_API_URL = 'https://netpick-backend.onrender.com/api/v1/auth';
 
 export const AuthService = {
@@ -21,8 +18,10 @@ export const AuthService = {
         throw new Error('Credenciales incorrectas');
       }
       const usuario = await response.json();
+      
       localStorage.setItem('auth_token', token);
       localStorage.setItem('user_data', JSON.stringify(usuario));
+      
       return usuario;
     } catch (error) {
       console.error("Error en login:", error);
