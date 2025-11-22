@@ -1,52 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import Container from '../components/atoms/Container';
-import CategoryGrid from '../components/molecules/CategoryGrid';
-import '../styles/Home.css';
-import { ProductService } from '../services/ProductService';
+const AUTH_API_URL = 'https://netpick-backend.onrender.com/api/v1/auth';
 
-function Home() {
-  const [products, setProducts] = useState([]);
+export const AuthService = {
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await ProductService.getAllProducts();
-        console.log("Datos recibidos:", data); 
+  login: async (correo, clave) => {
+    const token = btoa(`${correo}:${clave}`);
+    try {
+      const response = await fetch(`${AUTH_API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${token}` 
+        },
+        body: JSON.stringify({ correo, clave })
+      });
 
-        const mappedProducts = data.map(producto => ({
-          title: producto.nombre || "Producto sin nombre",
-          image: producto.linkImagen || "https://via.placeholder.com/300", 
-          description: `Precio: $${producto.precio || 0} - ${producto.descripcion || "Sin descripción"}`,
-          
-          link: `/product/${producto.idProducto}`
-        }));
-
-        setProducts(mappedProducts);
-      } catch (error) {
-        console.error("Error cargando home:", error);
+      if (!response.ok) {
+        throw new Error('Credenciales incorrectas');
       }
-    };
+      const usuario = await response.json();
+      
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('user_data', JSON.stringify(usuario));
+      
+      return usuario;
+    } catch (error) {
+      console.error("Error en login:", error);
+      throw error;
+    }
+  },
 
-    fetchProducts();
-  }, []);
+  logout: () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_data');
+    window.location.href = '/'; 
+  },
 
-  return (
-    <div className="homeContainer">
-      <Container>
-        <h2 style={{ textAlign: 'center', margin: '30px 0', color: '#333' }}>
-          Nuestros Productos
-        </h2>
-        
-        {products.length > 0 ? (
-           <CategoryGrid categories={products} />
-        ) : (
-           <div style={{textAlign: 'center', padding: '50px'}}>
-             <p>Cargando catálogo...</p>
-           </div>
-        )}
-      </Container>
-    </div>
-  );
-}
+  getAuthHeader: () => {
+    const token = localStorage.getItem('auth_token');
+    return token ? { 'Authorization': `Basic ${token}` } : {};
+  },
 
-export default Home;
+  getCurrentUser: () => {
+    const userStr = localStorage.getItem('user_data');
+    return userStr ? JSON.parse(userStr) : null;
+  },
+
+  isAuthenticated: () => {
+    return !!localStorage.getItem('auth_token');
+  }
+};

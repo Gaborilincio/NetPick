@@ -1,38 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import Container from '../components/atoms/Container';
-import CategoryGrid from '../components/molecules/CategoryGrid'; 
+import CategoryGrid from '../components/molecules/CategoryGrid';
 import '../styles/Home.css';
-import { ProductService } from '../services/ProductService'; 
+import { ProductService } from '../services/ProductService';
 
 function Home() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const data = await ProductService.getAllProducts();
-      const mappedProducts = data.map(producto => ({
-        title: producto.nombre,           
-        image: producto.linkImagen,       
-        description: `Precio: $${producto.precio} - ${producto.descripcion}`, 
-        link: `/product/${producto.idProducto}` 
-      }));
+      try {
+        const data = await ProductService.getAllProducts();
+        console.log("Datos recibidos:", data); 
 
-      setProducts(mappedProducts);
+        const mappedProducts = data.map(producto => ({
+          title: producto.nombre || "Producto sin nombre",
+
+          image: producto.linkImagen || "https://via.placeholder.com/300", 
+          
+          description: `Precio: $${producto.precio || 0} - ${producto.descripcion || "Sin descripción"}`,
+          
+          link: `/product/${producto.idProducto}`
+        }));
+
+        setProducts(mappedProducts);
+      } catch (error) {
+        console.error("Error cargando home:", error);
+      }
     };
 
     fetchProducts();
   }, []);
+
   return (
     <div className="homeContainer">
       <Container>
-        {}
-        <h2 style={{textAlign: 'center', margin: '20px 0'}}>Nuestros Productos Destacados</h2>
+        <h2 style={{ textAlign: 'center', margin: '30px 0', color: '#333' }}>
+          Nuestros Productos
+        </h2>
         
-        {}
         {products.length > 0 ? (
            <CategoryGrid categories={products} />
         ) : (
-           <p style={{textAlign: 'center'}}>Cargando productos del servidor...</p>
+           <div style={{textAlign: 'center', padding: '50px'}}>
+             <p>Cargando catálogo...</p>
+           </div>
         )}
       </Container>
     </div>
