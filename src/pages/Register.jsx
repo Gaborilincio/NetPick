@@ -1,91 +1,50 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AuthCard from '../components/organisms/AuthCard';
-import RegisterForm from '../components/molecules/RegisterForm';
-import Text from '../components/atoms/Text';
-import '../styles/Register.css';
+import { useNavigate } from 'react-router-dom';
+import { AuthService } from '../services/AuthService';
+import Container from 'react-bootstrap/Container';
 
 function Register() {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    telefono: '',
-    direccion: ''
-  });
+  const [formData, setFormData] = useState({ nombre: '', correo: '', clave: '' });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
-      setLoading(false);
-      return;
-    }
-
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const userData = {
-        id: Date.now(),
-        nombre: formData.nombre,
-        email: formData.email,
-        telefono: formData.telefono,
-        direccion: formData.direccion,
-        fechaRegistro: new Date().toLocaleDateString('es-ES', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        }),
-        avatar: '/img/default-avatar.png'
-      };
-      
-      localStorage.setItem('netpick_user', JSON.stringify(userData));
-      navigate('/profile');
+      await AuthService.register(formData.nombre, formData.correo, formData.clave);
+      alert('Registro exitoso. Por favor inicia sesión.');
+      navigate('/login');
     } catch (err) {
-      setError('Error al crear la cuenta');
-    } finally {
-      setLoading(false);
+      setError('Error al registrarse. Intenta nuevamente.');
     }
   };
 
   return (
-    <div className="registro-container">
-      <AuthCard title="Crear Cuenta" maxWidth="500px">
-        <RegisterForm
-          formData={formData}
-          handleChange={handleChange}
-          error={error}
-          loading={loading}
-          onSubmit={handleSubmit}
-        />
-
-        <div className="text-center mt-3">
-          <Text variant="p" className="mb-0">
-            ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
-          </Text>
-        </div>
-      </AuthCard>
-    </div>
+    <Container className="mt-5 d-flex justify-content-center">
+      <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
+        <h2 className="text-center mb-4">Crear Cuenta</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label>Nombre Completo</label>
+            <input type="text" name="nombre" className="form-control" onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label>Correo Electrónico</label>
+            <input type="email" name="correo" className="form-control" onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label>Contraseña</label>
+            <input type="password" name="clave" className="form-control" onChange={handleChange} required />
+          </div>
+          <button type="submit" className="btn btn-success w-100">Registrarse</button>
+        </form>
+      </div>
+    </Container>
   );
 }
 

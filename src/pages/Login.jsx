@@ -1,69 +1,56 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthCard from '../components/organisms/AuthCard';
-import LoginForm from '../components/molecules/LoginForm';
-import Text from '../components/atoms/Text';
-import '../styles/Login.css';
+import { useAuth } from '../context/AuthContext';
+import Container from 'react-bootstrap/Container'; 
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [clave, setClave] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
-  
-    if (!email || !password) {
-      setError('Por favor completa todos los campos');
-      setLoading(false);
-      return;
-    }
-  
-    const testUsers = [
-      { id: 1, email: "admin@netpick.com", password: "123456", nombre: "Admin NetPick" },
-      { id: 2, email: "user@netpick.com", password: "123456", nombre: "Usuario Demo" }
-    ];
-  
-    const foundUser = testUsers.find(u => u.email === email && u.password === password);
-    
-    if (foundUser) {
-      const userData = {
-        ...foundUser,
-        loginTime: new Date().toISOString()
-      };
-      localStorage.setItem('netpick_user', JSON.stringify(userData));
-      
-      window.location.href = '/profile';
-    } else {
-      setError('Credenciales incorrectas. Por favor, verifica tus datos.');
-      setLoading(false);
+    try {
+      await login(correo, clave);
+      navigate('/'); 
+    } catch (err) {
+      setError('Correo o contraseña incorrectos');
     }
   };
 
   return (
-    <div className="login-container">
-      <AuthCard title="Iniciar Sesión">
-        <LoginForm
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          error={error}
-          loading={loading}
-          onSubmit={handleSubmit}
-        />
-        
-        <div className="text-center mt-3">
-          <Text variant="p" className="text-muted small">
-            Usuario demo: admin@netpick.com / 123456
-          </Text>
-        </div>
-      </AuthCard>
-    </div>
+    <Container className="mt-5 d-flex justify-content-center">
+      <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
+        <h2 className="text-center mb-4">Iniciar Sesión</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label>Correo Electrónico</label>
+            <input 
+              type="email" 
+              className="form-control" 
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              required 
+            />
+          </div>
+          <div className="mb-3">
+            <label>Contraseña</label>
+            <input 
+              type="password" 
+              className="form-control" 
+              value={clave}
+              onChange={(e) => setClave(e.target.value)}
+              required 
+            />
+          </div>
+          <button type="submit" className="btn btn-primary w-100">Entrar</button>
+        </form>
+      </div>
+    </Container>
   );
 }
 

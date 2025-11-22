@@ -1,9 +1,10 @@
 const AUTH_API_URL = 'https://netpick-backend.onrender.com/api/v1/auth';
 
 export const AuthService = {
-
+  
   login: async (correo, clave) => {
     const token = btoa(`${correo}:${clave}`);
+    
     try {
       const response = await fetch(`${AUTH_API_URL}/login`, {
         method: 'POST',
@@ -17,8 +18,9 @@ export const AuthService = {
       if (!response.ok) {
         throw new Error('Credenciales incorrectas');
       }
-      const usuario = await response.json();
       
+      const usuario = await response.json();
+
       localStorage.setItem('auth_token', token);
       localStorage.setItem('user_data', JSON.stringify(usuario));
       
@@ -29,15 +31,30 @@ export const AuthService = {
     }
   },
 
+  register: async (nombre, correo, clave) => {
+    try {
+      const response = await fetch(`${AUTH_API_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nombre, correo, clave })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al registrar usuario');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error en registro:", error);
+      throw error;
+    }
+  },
+
   logout: () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_data');
-    window.location.href = '/'; 
-  },
-
-  getAuthHeader: () => {
-    const token = localStorage.getItem('auth_token');
-    return token ? { 'Authorization': `Basic ${token}` } : {};
   },
 
   getCurrentUser: () => {
