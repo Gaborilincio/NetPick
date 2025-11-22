@@ -58,7 +58,7 @@ function Register() {
         avatar: '/img/default-avatar.png'
       };
       
-      localStorage.setItem('netpick_user', JSON.stringify(userData));
+      localStorage.setItem('user_data', JSON.stringify(userData));
       navigate('/profile');
     } catch (err) {
       setError('Error al crear la cuenta');

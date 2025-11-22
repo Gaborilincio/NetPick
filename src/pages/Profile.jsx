@@ -26,7 +26,7 @@ function Profile() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('netpick_user');
+    localStorage.removeItem('user_data');
     navigate('/');
     window.location.reload();
   };

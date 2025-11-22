@@ -34,7 +34,7 @@ function Login() {
         ...foundUser,
         loginTime: new Date().toISOString()
       };
-      localStorage.setItem('netpick_user', JSON.stringify(userData));
+      localStorage.setItem('user_data', JSON.stringify(userData));
       
       window.location.href = '/profile';
     } else {
