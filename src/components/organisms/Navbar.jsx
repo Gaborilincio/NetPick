@@ -4,7 +4,7 @@ import Container from '../atoms/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from '../atoms/Button'; 
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../../context/AuthContext'; 
 import '../../styles/Navbar.css';
 
 function NavigationBar() {
