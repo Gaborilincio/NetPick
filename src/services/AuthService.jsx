@@ -1,68 +1,51 @@
-const AUTH_API_URL = 'https://netpick-backend.onrender.com/api/v1/auth';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthService } from '../services/AuthService';
+import Container from 'react-bootstrap/Container';
 
-export const AuthService = {
-  
-  login: async (correo, clave) => {
-    const token = btoa(`${correo}:${clave}`);
-    
-    try {
-      const response = await fetch(`${AUTH_API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${token}` 
-        },
-        body: JSON.stringify({ correo, clave })
-      });
+function Register() {
+  const [formData, setFormData] = useState({ nombre: '', correo: '', clave: '' });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-      if (!response.ok) {
-        throw new Error('Credenciales incorrectas');
-      }
-      
-      const usuario = await response.json();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('user_data', JSON.stringify(usuario));
-      
-      return usuario;
-    } catch (error) {
-      console.error("Error en login:", error);
-      throw error;
-    }
-  },
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await AuthService.register(formData); 
+      alert('Registro exitoso. Por favor inicia sesión.');
+      navigate('/login');
+    } catch (err) {
+      setError('Error al registrarse. Intenta nuevamente.');
+    }
+  };
 
-  register: async (nombre, correo, clave) => {
-    try {
-      const response = await fetch(`${AUTH_API_URL}/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nombre, correo, clave })
-      });
+  return (
+    <Container className="mt-5 d-flex justify-content-center">
+      <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
+        <h2 className="text-center mb-4">Crear Cuenta</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label>Nombre Completo</label>
+            <input type="text" name="nombre" className="form-control" onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label>Correo Electrónico</label>
+            <input type="email" name="correo" className="form-control" onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label>Contraseña</label>
+            <input type="password" name="clave" className="form-control" onChange={handleChange} required />
+          </div>
+          <button type="submit" className="btn btn-success w-100">Registrarse</button>
+        </form>
+      </div>
+    </Container>
+  );
+}
 
-      if (!response.ok) {
-        throw new Error('Error al registrar usuario');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Error en registro:", error);
-      throw error;
-    }
-  },
-
-  logout: () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_data');
-  },
-
-  getCurrentUser: () => {
-    const userStr = localStorage.getItem('user_data');
-    return userStr ? JSON.parse(userStr) : null;
-  },
-
-  isAuthenticated: () => {
-    return !!localStorage.getItem('auth_token');
-  }
-};
+export default Register;
