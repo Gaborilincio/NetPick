@@ -48,6 +48,11 @@ export const AuthService = {
     return json;
   },
 
+    getCurrentUser: () => {
+    const user = localStorage.getItem("usuario");
+    return user ? JSON.parse(user) : null;
+  },
+
   logout: () => {
     localStorage.removeItem("usuario");
   },
