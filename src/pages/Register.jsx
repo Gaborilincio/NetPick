@@ -4,7 +4,12 @@ import { AuthService } from '../services/AuthService';
 import Container from 'react-bootstrap/Container';
 
 function Register() {
-  const [formData, setFormData] = useState({ nombre: '', correo: '', clave: '' });
+  const [formData, setFormData] = useState({
+  nombre: '',
+  correo: '',
+  clave: '',
+  telefono: ''
+});
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -41,6 +46,10 @@ function Register() {
             <label>Contraseña</label>
             <input type="password" name="clave" className="form-control" onChange={handleChange} required />
           </div>
+          <div className="mb-3">
+            <label>Teléfono</label>
+            <input type="text" name="telefono" className="form-control" onChange={handleChange} required />
+          </div>
           <button type="submit" className="btn btn-success w-100">Registrarse</button>
         </form>
       </div>
