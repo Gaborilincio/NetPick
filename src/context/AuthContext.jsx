@@ -17,12 +17,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (correo, clave) => {
     try {
       const data = { correo, clave }; 
-      
       const userData = await AuthService.login(data); 
       setUser(userData); 
       return userData;
     } catch (error) {
-      throw error;
+      throw error;      
     }
 };
 

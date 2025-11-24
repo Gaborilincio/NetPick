@@ -23,17 +23,18 @@ export const AuthService = {
 
     return await response.text(); 
   },
-  login: async (data) => {
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        correo: data.correo,
-        clave: data.clave,
-      }),
-    });
+  
+login: async (data) => {
+  const response = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      correo: data.correo, 
+      clave: data.clave,
+    }),
+  });
 
     if (!response.ok) {
       const errorText = await response.text();
