@@ -16,13 +16,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (correo, clave) => {
     try {
-      const userData = await AuthService.login(correo, clave);
+      const data = { correo, clave }; 
+      
+      const userData = await AuthService.login(data); 
       setUser(userData); 
       return userData;
     } catch (error) {
       throw error;
     }
-  };
+};
 
   const logout = () => {
     AuthService.logout();
