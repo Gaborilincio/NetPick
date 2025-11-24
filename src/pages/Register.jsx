@@ -15,9 +15,9 @@ function Register() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ 
-      ...formData, 
-      [e.target.name]: e.target.value 
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
     });
   };
 
@@ -44,52 +44,52 @@ function Register() {
           {/* nombre */}
           <div className="mb-3">
             <label>Nombre Completo</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="nombre"
               className="form-control"
               value={formData.nombre}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
 
           {/* correo */}
           <div className="mb-3">
             <label>Correo Electrónico</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               name="correo"
               className="form-control"
               value={formData.correo}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
 
           {/* contraseña */}
           <div className="mb-3">
             <label>Contraseña</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               name="clave"
               className="form-control"
               value={formData.clave}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
 
           {/* teléfono */}
           <div className="mb-3">
             <label>Teléfono</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="telefono"
               className="form-control"
               value={formData.telefono}
               onChange={handleChange}
-              required 
+              required
             />
           </div>
 

@@ -17,7 +17,8 @@ function Login() {
       await login(correo, clave);
       navigate('/'); 
     } catch (err) {
-      setError('Correo o contraseña incorrectos');
+      console.log(err); 
+      setError(err.message || 'Error desconocido al iniciar sesión');
     }
   };
 
@@ -25,7 +26,9 @@ function Login() {
     <Container className="mt-5 d-flex justify-content-center">
       <div className="card p-4 shadow" style={{ maxWidth: '400px', width: '100%' }}>
         <h2 className="text-center mb-4">Iniciar Sesión</h2>
+        
         {error && <div className="alert alert-danger">{error}</div>}
+        
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label>Correo Electrónico</label>
