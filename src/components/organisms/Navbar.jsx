@@ -51,8 +51,8 @@ function NavigationBar() {
                                 <NavDropdown.Item eventKey="profile">
                                     Mi Perfil
                                 </NavDropdown.Item>
-                                <NavDropdown.Item eventKey="edit-profile">
-                                    Editar Perfil
+                                <NavDropdown.Item eventKey="my-purchases">
+                                    Mis Compras
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item eventKey="logout">

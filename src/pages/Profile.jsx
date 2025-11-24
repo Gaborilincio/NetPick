@@ -1,17 +1,27 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
 import UserProfileSection from '../components/organisms/UserProfileSection';
 import '../styles/Profile.css';
 
 function Profile() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth(); 
 
-  const user = {
-    nombre: 'Juan Pérez',
-    email: 'juan@email.com',
-    telefono: '+56 9 1234 5678',
-    direccion: 'Av. Principal #123, Santiago, Chile',
-    fechaRegistro: '15 Enero 2024',
+  if (!user) {
+    return (
+        <div className="perfil-container d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
+            <h2>Cargando perfil o no autenticado...</h2>
+        </div>
+    );
+  }
+
+  const userData = {
+    nombre: user.nombre || 'N/A',
+    email: user.correo || 'N/A',
+    telefono: user.telefono || 'Sin teléfono',
+    direccion: user.direccion || 'Sin dirección registrada',
+    fechaRegistro: '15 Enero 2024', 
     avatar: '/img/default-avatar.png'
   };
 
@@ -22,23 +32,32 @@ function Profile() {
   ];
 
   const handleEditProfile = () => {
-    navigate('/edit-profile');
+    navigate('/perfil/editar'); 
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user_data');
+    logout(); 
     navigate('/');
-    window.location.reload();
   };
 
   return (
     <div className="perfil-container">
       <UserProfileSection 
-        user={user}
+        user={userData} 
         pedidosRecientes={pedidosRecientes}
         onEditProfile={handleEditProfile}
         onLogout={handleLogout}
       />
+      
+      {/* Botón para navegar a Mis Compras */}
+      <div className="text-center mt-4">
+        <button 
+          className="btn btn-info btn-lg" 
+          onClick={() => navigate('/compras')}
+        >
+          Ver Historial de Compras
+        </button>
+      </div>
     </div>
   );
 }
