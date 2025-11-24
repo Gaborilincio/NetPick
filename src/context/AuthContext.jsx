@@ -16,8 +16,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (correo, clave) => {
     try {
-      const userData = await AuthService.login(correo, clave);
-      setUser(userData); 
+      const data = { correo, clave };
+      const userData = await AuthService.login(data);
+      setUser(userData);
       return userData;
     } catch (error) {
       throw error;
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     AuthService.logout();
-    setUser(null); 
+    setUser(null);
   };
 
   return (
