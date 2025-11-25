@@ -7,12 +7,12 @@ import Card from '../components/atoms/Card';
 import Text from '../components/atoms/Text';
 import Button from '../components/atoms/Button';
 import Image from '../components/atoms/Image';
-import { useCart } from '../context/CartContext'; // 1. Importamos el contexto
+import { useCart } from '../context/CartContext'; 
 
 function Cart() {
   const navigate = useNavigate();
 
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cart, removeFromCart, clearCart, decreaseQuantity, addToCart } = useCart();
 
   const total = cart.reduce((acc, item) => {
     const precio = parseFloat(item.precio) || 0;
@@ -23,6 +23,7 @@ function Cart() {
   const handleCheckout = () => {
     navigate('/checkout');
   };
+  
   const getImage = (item) => {
     return item.url || item.image || item.linkImagen || item.img || "https://via.placeholder.com/150";
   };
@@ -63,7 +64,6 @@ function Cart() {
             <Card key={item.id || item.idProducto || Math.random()} className="mb-3 shadow-sm border-0">
               <div className="row g-0 align-items-center">
 
-                {/* Imagen del producto */}
                 <div className="col-4 col-md-2 p-2">
                   <div style={{ height: '80px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Image
@@ -91,16 +91,32 @@ function Cart() {
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mt-3">
+                      
                       <div className="input-group input-group-sm" style={{ width: '100px' }}>
-                        <button className="btn btn-outline-secondary" type="button">-</button>
+                        <button 
+                            className="btn btn-outline-secondary" 
+                            type="button"
+                            onClick={() => decreaseQuantity(item)} 
+                        >
+                            -
+                        </button>
+                        
                         <input
                           type="text"
                           className="form-control text-center"
                           value={item.quantity || 1}
                           readOnly
                         />
-                        <button className="btn btn-outline-secondary" type="button">+</button>
+                        
+                        <button 
+                            className="btn btn-outline-secondary" 
+                            type="button"
+                            onClick={() => addToCart(item)} 
+                        >
+                            +
+                        </button>
                       </div>
+
                       <button
                         onClick={() => removeFromCart(item)}
                         className="btn btn-outline-danger btn-sm border-0"
