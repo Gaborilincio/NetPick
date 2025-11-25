@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // Importamos useState
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/atoms/Container';
 import Card from '../components/atoms/Card';
@@ -13,37 +13,47 @@ import '../styles/EditProfile.css';
 
 function EditProfile() {
   const navigate = useNavigate();
-  
-  const userData = {
+
+  const [formData, setFormData] = useState({
     nombre: 'Juan Pérez',
     email: 'juan@email.com',
     telefono: '+56 9 1234 5678',
     direccion: 'Av. Principal #123, Santiago, Chile'
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleCancel = () => {
-    navigate('/profile');
+    navigate('/profile'); 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Esta es una demostración. En una aplicación real se guardarían los cambios.');
-    navigate('/profile');
+    console.log("Datos a guardar:", formData);
+    alert('¡Cambios guardados con éxito! (Demo)');
+    navigate('/perfil'); 
   };
 
   return (
-    <div className="editar-perfil-container">
+    <div className="editar-perfil-container py-5 bg-light" style={{ minHeight: '80vh' }}>
       <Container>
         <Row className="justify-content-center">
-          <Col md={8} lg={6}>
-            <Card className="editar-perfil-card">
-              <CardBody className="p-4">
-                <Text variant="h2" className="editar-perfil-titulo">
+          <Col xs={12} md={8} lg={6}>
+            <Card className="shadow border-0">
+              <CardBody className="p-4 p-md-5"> 
+                
+                <Text variant="h2" className="text-center mb-3 fw-bold">
                   Editar Perfil
                 </Text>
 
-                <Text variant="p" className="text-muted text-center mb-4">
-                  Formulario de demostración - Los cambios no se guardarán
+                <Text variant="p" className="text-muted text-center mb-4 small">
+                  Actualiza tu información personal
                 </Text>
 
                 <form onSubmit={handleSubmit}>
@@ -52,8 +62,9 @@ function EditProfile() {
                       type="text"
                       name="nombre"
                       placeholder="Tu nombre completo"
-                      defaultValue={userData.nombre}
-                      readOnly
+                      value={formData.nombre} 
+                      onChange={handleChange} 
+                      required
                     />
                   </FormGroup>
 
@@ -62,8 +73,9 @@ function EditProfile() {
                       type="email"
                       name="email"
                       placeholder="tu@email.com"
-                      defaultValue={userData.email}
-                      readOnly
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
                     />
                   </FormGroup>
 
@@ -72,8 +84,8 @@ function EditProfile() {
                       type="tel"
                       name="telefono"
                       placeholder="+56 9 1234 5678"
-                      defaultValue={userData.telefono}
-                      readOnly
+                      value={formData.telefono}
+                      onChange={handleChange}
                     />
                   </FormGroup>
 
@@ -82,26 +94,28 @@ function EditProfile() {
                       type="text"
                       name="direccion"
                       placeholder="Tu dirección"
-                      defaultValue={userData.direccion}
-                      readOnly
+                      value={formData.direccion}
+                      onChange={handleChange}
+                      as="textarea" 
                     />
                   </FormGroup>
 
+                  <hr className="my-4" />
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     <Button 
                       type="button" 
                       variant="outline-secondary" 
                       onClick={handleCancel}
-                      className="editar-perfil-boton editar-perfil-boton-secundario"
+                      className="px-4" 
                     >
-                      Volver al Perfil
+                      Cancelar
                     </Button>
                     <Button 
                       type="submit" 
                       variant="primary"
-                      className="editar-perfil-boton editar-perfil-boton-primario"
+                      className="px-4"
                     >
-                      Guardar Cambios (Demo)
+                      Guardar Cambios
                     </Button>
                   </div>
                 </form>
