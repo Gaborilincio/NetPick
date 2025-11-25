@@ -6,14 +6,14 @@ import Col from '../components/atoms/Col';
 import Card from '../components/atoms/Card';
 import Image from '../components/atoms/Image';
 import Text from '../components/atoms/Text';
-import Button from '../components/atoms/Button'; 
+import Button from '../components/atoms/Button';
 import { ProductService } from '../services/ProductService';
-import { useCart } from '../context/CartContext'; 
+import { useCart } from '../context/CartContext';
 
 function ProductDetail() {
   const { id } = useParams();
-  const { addToCart } = useCart(); 
-  
+  const { addToCart } = useCart();
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,7 +38,7 @@ function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product); 
+      addToCart(product);
       setAgregado(true);
       setTimeout(() => setAgregado(false), 2000);
     }
@@ -47,6 +47,12 @@ function ProductDetail() {
   if (loading) return <div className="text-center py-5">Cargando...</div>;
   if (error || !product) return <div className="text-center py-5 text-danger">{error}</div>;
 
+  const imagenSrc = product.linkImagen || product.url || product.image || "https://via.placeholder.com/500";
+
+  const categoriaNombre = typeof product.categoria === 'object' ? product.categoria.nombre : product.categoria;
+
+
+
   return (
     <Container className="my-5">
       <Row className="justify-content-center">
@@ -54,9 +60,9 @@ function ProductDetail() {
           <Card className="shadow overflow-hidden">
             <Row className="g-0">
               <Col md={6} className="bg-light d-flex align-items-center justify-content-center">
-                <Image 
-                  src={product.url || product.image} 
-                  alt={product.nombre} 
+                <Image
+                  src={product.url || product.image}
+                  alt={product.nombre}
                   className="img-fluid p-4"
                   style={{ maxHeight: '500px', objectFit: 'contain' }}
                 />
@@ -77,7 +83,7 @@ function ProductDetail() {
 
                 <hr className="my-4" />
                 <div className="d-grid gap-2">
-                  <Button 
+                  <Button
                     onClick={handleAddToCart}
                     className={`btn-lg ${agregado ? 'btn-success' : 'btn-primary'}`}
                   >
