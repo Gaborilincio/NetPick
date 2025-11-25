@@ -2,10 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-
 import Navbar from './components/organisms/Navbar';
 import Footer from './components/organisms/Footer';
-
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -16,7 +14,6 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import Cart from './pages/Cart';
 import ForgotPassword from './pages/ForgotPassword';
-import Account from './pages/Account'; 
 import './styles/global.css';
 
 function App() {
@@ -35,7 +32,6 @@ function App() {
               <Route path="/perfil" element={<Profile />} />
               <Route path="/perfil/editar" element={<EditProfile />} />
               <Route path="/recuperar" element={<ForgotPassword />} />
-              <Route path="/cuenta" element={<Account />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
             </Routes>
