@@ -8,10 +8,12 @@ import Text from '../components/atoms/Text';
 import Button from '../components/atoms/Button';
 import Image from '../components/atoms/Image';
 import { useCart } from '../context/CartContext'; 
+import { useAuth } from '../context/AuthContext';
 
 function Cart() {
   const navigate = useNavigate();
-
+  
+  const { user } = useAuth();
   const { cart, removeFromCart, clearCart, decreaseQuantity, addToCart } = useCart();
 
   const total = cart.reduce((acc, item) => {
@@ -21,7 +23,11 @@ function Cart() {
   }, 0);
 
   const handleCheckout = () => {
-    navigate('/checkout');
+    if (!user) {
+      navigate('/login');
+    } else {
+      navigate('/checkout');
+    }
   };
   
   const getImage = (item) => {
@@ -155,7 +161,7 @@ function Cart() {
                 onClick={handleCheckout}
                 className="w-100 btn-primary btn-lg mb-3"
               >
-                Ir a Pagar
+                {user ? "Ir a Pagar" : "Iniciar Sesión para Pagar"}
               </Button>
 
               <Button
