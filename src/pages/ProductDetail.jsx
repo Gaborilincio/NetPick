@@ -1,55 +1,90 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '../components/atoms/Container';
 import Row from '../components/atoms/Row';
 import Col from '../components/atoms/Col';
 import Card from '../components/atoms/Card';
-import CardBody from '../components/molecules/CardBody';
 import Image from '../components/atoms/Image';
 import Text from '../components/atoms/Text';
-import Button from '../components/atoms/Button';
-import productos from '../data/Products';
+import Button from '../components/atoms/Button'; 
+import { ProductService } from '../services/ProductService';
+import { useCart } from '../context/CartContext'; 
 
 function ProductDetail() {
   const { id } = useParams();
+  const { addToCart } = useCart(); 
   
-  const todosLosProductos = Object.values(productos).flat();
-  const product = todosLosProductos.find((p) => p.id === parseInt(id));
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!product) {
-    return (
-      <Container className="my-5">
-        <Text variant="h1" className="text-center">Producto no encontrado</Text>
-        <Text variant="p" className="text-center text-muted">
-          El producto con ID {id} no existe.
-        </Text>
-      </Container>
-    );
-  }
+  const [agregado, setAgregado] = useState(false);
+
+  useEffect(() => {
+    const fetchProductDetail = async () => {
+      setLoading(true);
+      try {
+        const data = await ProductService.getProductById(id);
+        if (data) setProduct(data);
+        else setError("Producto no encontrado");
+      } catch (err) {
+        setError("Error de conexión");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchProductDetail();
+  }, [id]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product); 
+      setAgregado(true);
+      setTimeout(() => setAgregado(false), 2000);
+    }
+  };
+
+  if (loading) return <div className="text-center py-5">Cargando...</div>;
+  if (error || !product) return <div className="text-center py-5 text-danger">{error}</div>;
 
   return (
     <Container className="my-5">
       <Row className="justify-content-center">
         <Col md={10}>
-          <Card className="shadow">
+          <Card className="shadow overflow-hidden">
             <Row className="g-0">
-              <Col md={6}>
+              <Col md={6} className="bg-light d-flex align-items-center justify-content-center">
                 <Image 
-                  src={product.url} 
+                  src={product.url || product.image} 
                   alt={product.nombre} 
-                  className="img-fluid h-100"
-                  style={{ 
-                    objectFit: 'cover', 
-                    minHeight: '400px',
-                    width: '100%' 
-                  }}
+                  className="img-fluid p-4"
+                  style={{ maxHeight: '500px', objectFit: 'contain' }}
                 />
               </Col>
-              <Col md={6}>
-                <CardBody 
-                  product={product}
-                  className="h-100 d-flex flex-column p-4"
-                />
+              <Col md={6} className="p-4 d-flex flex-column justify-content-center">
+                <Text variant="small" className="text-muted text-uppercase mb-2">
+                  {typeof product.categoria === 'object' ? product.categoria.nombre : product.categoria}
+                </Text>
+                <Text variant="h2" className="mb-3 fw-bold">
+                  {product.nombre}
+                </Text>
+                <Text variant="p" className="text-secondary mb-4">
+                  {product.descripcion || "Sin descripción disponible."}
+                </Text>
+                <Text variant="h3" className="text-primary mb-4">
+                  ${product.precio}
+                </Text>
+
+                <hr className="my-4" />
+                <div className="d-grid gap-2">
+                  <Button 
+                    onClick={handleAddToCart}
+                    className={`btn-lg ${agregado ? 'btn-success' : 'btn-primary'}`}
+                  >
+                    {agregado ? '¡Agregado al Carrito!' : 'Agregar al Carrito'}
+                  </Button>
+                </div>
+
               </Col>
             </Row>
           </Card>
