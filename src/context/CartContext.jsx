@@ -5,42 +5,46 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState(() => {
-        try {
-            const localData = localStorage.getItem('netpick_cart');
-            return localData ? JSON.parse(localData) : [];
-        } catch {
-            return [];
-        }
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const productId = product.id || product.idProducto || product._id;
+      const existingItem = prevCart.find((item) => 
+        (item.id || item.idProducto || item._id) === productId
+      );
+
+      if (existingItem) {
+        return prevCart.map((item) =>
+          (item.id || item.idProducto || item._id) === productId
+            ? { ...item, quantity: (item.quantity || 1) + 1 } 
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
     });
+  };
 
-    useEffect(() => {
-        localStorage.setItem('netpick_cart', JSON.stringify(cart));
-    }, [cart]);
+  const removeFromCart = (productToRemove) => {
+    setCart((prevCart) => {
+      const productId = productToRemove.id || productToRemove.idProducto || productToRemove._id;
+      return prevCart.filter((item) => (item.id || item.idProducto || item._id) !== productId);
+    });
+  };
 
-    const addToCart = (product) => {
-        setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.idProducto === product.idProducto);
-            if (existingItem) {
-                return prevCart.map(item => 
-                    item.idProducto === product.idProducto 
-                    ? { ...item, quantity: item.quantity + 1 } 
-                    : item
-                );
-            }
-            return [...prevCart, { ...product, quantity: 1 }];
-        });
-    };
+  const clearCart = () => setCart([]);
 
-    const removeFromCart = (productId) => {
-        setCart(prevCart => prevCart.filter(item => item.idProducto !== productId));
-    };
-
-    const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-
-    return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, cartCount }}>
-            {children}
-        </CartContext.Provider>
-    );
+  return (
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
+      {children}
+    </CartContext.Provider>
+  );
 };
