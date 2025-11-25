@@ -7,6 +7,7 @@ import ProductCard from '../components/molecules/ProductCard';
 import productos from '../data/Products';
 
 function Products() {
+  console.log("CONTENIDO DE PRODUCTOS:", productos);
   return (
     <Container className="my-5">
       <Text variant="h1" className="text-center mb-5">Nuestros Productos</Text>

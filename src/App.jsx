@@ -17,7 +17,6 @@ import EditProfile from './pages/EditProfile';
 import Cart from './pages/Cart';
 import ForgotPassword from './pages/ForgotPassword';
 import Account from './pages/Account'; 
-
 import './styles/global.css';
 
 function App() {
