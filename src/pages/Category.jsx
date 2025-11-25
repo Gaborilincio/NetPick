@@ -1,44 +1,85 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Container from '../components/atoms/Container';
 import Row from '../components/atoms/Row';
 import Col from '../components/atoms/Col';
 import Text from '../components/atoms/Text';
 import ProductCard from '../components/molecules/ProductCard';
-import productos from '../data/Products';
-import '../styles/Category.css';
+import { ProductService } from '../services/ProductService';
+import '../styles/global.css';
 
 function Category() {
-  const { categoryName } = useParams();
-  
-  const productosCategoria = productos[categoryName];
+  const [groupedProducts, setGroupedProducts] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  if (!productosCategoria) {
+  useEffect(() => {
+    const fetchAndGroupProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await ProductService.getProducts();
+        const agrupados = data.reduce((acc, product) => {
+          const categoria = product.categoria || 'Otros';
+
+          if (!acc[categoria]) {
+            acc[categoria] = [];
+          }
+          acc[categoria].push(product);
+          return acc;
+        }, {});
+
+        setGroupedProducts(agrupados);
+      } catch (error) {
+        console.error("Error cargando categorías:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAndGroupProducts();
+  }, []);
+
+  if (loading) {
     return (
-      <div className="categoria-container">
-        <Container>
-          <Text variant="h1" className="text-center">Categoría no encontrada</Text>
-          <Text variant="p" className="text-center text-muted">
-            La categoría "{categoryName}" no existe.
-          </Text>
-        </Container>
-      </div>
+      <Container className="py-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Cargando categorías...</span>
+        </div>
+      </Container>
+    );
+  }
+
+  if (Object.keys(groupedProducts).length === 0) {
+    return (
+      <Container className="py-5 text-center">
+        <Text variant="h2">No hay categorías disponibles por el momento.</Text>
+      </Container>
     );
   }
 
   return (
-    <div className="categoria-container">
+    <div className="category-page py-4">
       <Container>
-        <Text variant="h1" className="categoria-titulo">
-          {categoryName}
-        </Text>
-        <Row>
-          {productosCategoria.map((product) => (
-            <Col key={product.id} sm={12} md={6} lg={3} className="mb-4">
-              <ProductCard product={product} />
-            </Col>
-          ))}
-        </Row>
+        <Text variant="h1" className="text-center mb-5">Categorías</Text>
+        {Object.keys(groupedProducts).map((nombreCategoria) => (
+          <div key={nombreCategoria} className="mb-5 category-section">
+            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <Text variant="h2" className="text-capitalize m-0">
+                {nombreCategoria}
+              </Text>
+              <Link to={`/productos?category=${nombreCategoria}`} className="btn btn-outline-primary btn-sm">
+                Ver todo {nombreCategoria}
+              </Link>
+            </div>
+
+            <Row>
+              {groupedProducts[nombreCategoria].slice(0, 4).map((product) => (
+                <Col key={product.idProducto || product.id} sm={12} md={6} lg={3} className="mb-3">
+                  <ProductCard product={product} />
+                </Col>
+              ))}
+            </Row>
+          </div>
+        ))}
       </Container>
     </div>
   );
