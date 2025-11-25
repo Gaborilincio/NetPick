@@ -12,18 +12,24 @@ function Category() {
   const [groupedProducts, setGroupedProducts] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
     const fetchAndGroupProducts = async () => {
       try {
         setLoading(true);
         const data = await ProductService.getProducts();
-        const agrupados = data.reduce((acc, product) => {
-          const categoria = product.categoria || 'Otros';
 
-          if (!acc[categoria]) {
-            acc[categoria] = [];
+        const agrupados = data.reduce((acc, product) => {
+          let nombreCat = 'Otros';
+          if (product.categoria && typeof product.categoria === 'object') {
+             nombreCat = product.categoria.name || product.categoria.nombre || product.categoria.title || 'Categoría Desconocida';
+          } 
+          else if (typeof product.categoria === 'string') {
+             nombreCat = product.categoria;
           }
-          acc[categoria].push(product);
+          if (!acc[nombreCat]) {
+            acc[nombreCat] = [];
+          }
+          acc[nombreCat].push(product);
           return acc;
         }, {});
 
@@ -37,6 +43,7 @@ function Category() {
 
     fetchAndGroupProducts();
   }, []);
+
 
   if (loading) {
     return (
