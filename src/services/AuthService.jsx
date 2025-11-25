@@ -1,7 +1,7 @@
 const API_URL = "https://netpick-backend.onrender.com/api/v1/auth";
 
 export const AuthService = {
-  
+
   register: async (data) => {
     const response = await fetch(`${API_URL}/register`, {
       method: "POST",
@@ -21,20 +21,20 @@ export const AuthService = {
       throw new Error(errorText || "Error en registro");
     }
 
-    return await response.text(); 
+    return await response.text();
   },
-  
-login: async (data) => {
-  const response = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      correo: data.correo, 
-      clave: data.clave,
-    }),
-  });
+
+  login: async (data) => {
+    const response = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        correo: data.correo,
+        clave: data.clave,
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -49,7 +49,7 @@ login: async (data) => {
     return json;
   },
 
-    getCurrentUser: () => {
+  getCurrentUser: () => {
     const user = localStorage.getItem("usuario");
     return user ? JSON.parse(user) : null;
   },
@@ -60,5 +60,29 @@ login: async (data) => {
 
   getUser: () => {
     return JSON.parse(localStorage.getItem("usuario"));
+  },
+
+  updateProfile: async (userData) => {
+    const token = localStorage.getItem('token'); 
+
+    try {
+      const response = await fetch(`${API_URL}/profile`, { 
+        method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al actualizar perfil');
+      }
+
+      return await response.json(); 
+    } catch (error) {
+      throw error;
+    }
   }
 };

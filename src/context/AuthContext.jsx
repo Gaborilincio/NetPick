@@ -30,9 +30,24 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUserProfile = async (newUserData) => {
+    try {
+      const updatedUser = await AuthService.updateProfile(newUserData);
+
+      setUser(updatedUser);
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: error.message };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, login, logout, updateUserProfile }}>
+      {children}
     </AuthContext.Provider>
   );
 };
