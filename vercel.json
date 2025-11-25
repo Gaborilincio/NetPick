@@ -1,0 +1,11 @@
+/netpick-frontend
+   vercel.json
+   package.json
+   src/
+   public/
+
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}

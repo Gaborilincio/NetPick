@@ -25,9 +25,7 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
-
           <Navbar />
-
           <main className="flex-grow-1">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -43,9 +41,7 @@ function App() {
               <Route path="/register" element={<Register />} />
             </Routes>
           </main>
-
           <Footer />
-
         </CartProvider>
       </AuthProvider>
     </Router>
