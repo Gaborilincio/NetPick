@@ -10,7 +10,7 @@ function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await ProductService.getAllProducts();
+        const data = await ProductService.getProducts();
         console.log("Datos recibidos:", data); 
 
         const mappedProducts = data.map(producto => ({
