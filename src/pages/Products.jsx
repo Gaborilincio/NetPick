@@ -9,20 +9,24 @@ import { ProductService } from '../services/ProductService';
 import '../styles/Products.css';
 
 function Products() {
-  const [productos, setProductos] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); 
+  const [productos, setProductos] = useState([]);     
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentFilters, setCurrentFilters] = useState({});
 
-  const fetchProducts = useCallback(async (filters) => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await ProductService.getProducts(filters);
-      setProductos(data);
+      const data = await ProductService.getProducts(); 
+      setAllProducts(data);
+      setProductos(data); 
     } catch (err) {
       console.error("Error cargando productos:", err);
-      setError("Hubo un problema al cargar los productos. Intenta nuevamente.");
+      setError("Hubo un problema al cargar los productos.");
+      setAllProducts([]);
       setProductos([]);
     } finally {
       setLoading(false);
@@ -30,10 +34,38 @@ function Products() {
   }, []);
 
   useEffect(() => {
-    fetchProducts(currentFilters);
-  }, [currentFilters, fetchProducts]);
+    fetchProducts();
+  }, [fetchProducts]);
+
+  useEffect(() => {
+
+    let resultado = [...allProducts];
+
+    if (currentFilters.search) {
+      const termino = currentFilters.search.toLowerCase();
+      resultado = resultado.filter(p => 
+        p.nombre && p.nombre.toLowerCase().includes(termino)
+      );
+    }
+
+    if (currentFilters.minPrice) {
+      resultado = resultado.filter(p => parseFloat(p.precio) >= parseFloat(currentFilters.minPrice));
+    }
+
+    if (currentFilters.maxPrice) {
+      resultado = resultado.filter(p => parseFloat(p.precio) <= parseFloat(currentFilters.maxPrice));
+    }
+
+    if (currentFilters.category && currentFilters.category !== 'todas') {
+       resultado = resultado.filter(p => p.categoria === currentFilters.category);
+    }
+
+    setProductos(resultado);
+
+  }, [currentFilters, allProducts]); 
 
   const handleFilterSubmit = (filters) => {
+    console.log("Filtros recibidos:", filters); 
     setCurrentFilters(filters);
   };
 
@@ -67,13 +99,11 @@ function Products() {
                 {error}
             </div>
         )}
-
         {!loading && !error && productos.length === 0 && (
             <div className="alert alert-info text-center">
                 No se encontraron productos con los filtros seleccionados.
             </div>
         )}
-
         {!loading && !error && productos.length > 0 && (
             <Row>
               {productos.map((product) => (
