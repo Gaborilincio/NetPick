@@ -1,31 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import Container from '../components/atoms/Container';
-import CategoryGrid from '../components/molecules/CategoryGrid';
-import '../styles/Home.css';
+import Row from '../components/atoms/Row';
+import Col from '../components/atoms/Col';
+import Text from '../components/atoms/Text';
+import ProductCard from '../components/molecules/ProductCard'; 
 import { ProductService } from '../services/ProductService';
+import '../styles/Home.css';
 
 function Home() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const data = await ProductService.getProducts();
-        console.log("Datos recibidos:", data); 
-
-        const mappedProducts = data.map(producto => ({
-          title: producto.nombre || "Producto sin nombre",
-
-          image: producto.linkImagen || "https://via.placeholder.com/300", 
-          
-          description: `Precio: $${producto.precio || 0} - ${producto.descripcion || "Sin descripción"}`,
-          
-          link: `/product/${producto.idProducto}`
-        }));
-
-        setProducts(mappedProducts);
+        setProducts(data.slice(0, 8)); 
+        
       } catch (error) {
         console.error("Error cargando home:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,16 +31,33 @@ function Home() {
   return (
     <div className="homeContainer">
       <Container>
-        <h2 style={{ textAlign: 'center', margin: '30px 0', color: '#333' }}>
-          Nuestros Productos
-        </h2>
+        <div className="text-center my-5">
+           <Text variant="h1" style={{ color: '#333' }}>
+             Nuestros Productos Destacados
+           </Text>
+           <Text variant="p" className="text-muted">
+             Lo mejor de nuestra colección para ti
+           </Text>
+        </div>
         
-        {products.length > 0 ? (
-           <CategoryGrid categories={products} />
-        ) : (
+        {loading ? (
            <div style={{textAlign: 'center', padding: '50px'}}>
-             <p>Cargando catálogo...</p>
+             <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+             </div>
            </div>
+        ) : (
+           <Row>
+             {products.length > 0 ? (
+               products.map((producto) => (
+                 <Col key={producto.id || producto.idProducto} sm={12} md={6} lg={3} className="mb-4">
+                    <ProductCard product={producto} />
+                 </Col>
+               ))
+             ) : (
+               <div className="text-center w-100">No hay productos para mostrar.</div>
+             )}
+           </Row>
         )}
       </Container>
     </div>
