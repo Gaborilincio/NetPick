@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext'; 
+import { useCart } from '../../context/CartContext';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
-import { ShoppingCart } from 'lucide-react'; 
 
 function NavigationBar() {
     const { user, logout } = useAuth();
     const { cartCount } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const [showDropdown, setShowDropdown] = useState(false);
 
     const handleLogout = () => {
         logout();
         navigate('/');
     };
-    
+
     const handleToggle = (isOpen) => {
         setShowDropdown(isOpen);
     };
@@ -30,8 +29,8 @@ function NavigationBar() {
         if (eventKey === 'logout') {
             handleLogout();
         } else if (eventKey === 'profile') {
-            navigate('/perfil'); 
-        } else if (eventKey === 'my-purchases') { 
+            navigate('/perfil');
+        } else if (eventKey === 'my-purchases') {
             navigate('/compras');
         } else if (eventKey === 'edit-profile') {
             navigate('/perfil/editar');
@@ -45,7 +44,7 @@ function NavigationBar() {
                 <Navbar.Brand as={Link} to="/" className="fw-bold text-white">NetPick</Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                
+
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/productos" active={location.pathname === '/productos'}>
@@ -56,14 +55,15 @@ function NavigationBar() {
                         </Nav.Link>
                     </Nav>
                     <Nav className="ms-auto align-items-lg-center gap-3">
-                        <Button 
-                            as={Link} 
-                            to="/carrito" 
-                            variant="outline-light" 
+                        <Button
+                            as={Link}
+                            to="/carrito"
+                            variant="outline-light"
                             className="d-flex align-items-center position-relative border-0"
                         >
-                            <ShoppingCart className="h-5 w-5" />
+                            <span style={{ fontSize: "1.3rem" }}>🛒</span>
                             <span className="d-none d-lg-inline ms-2">Carrito</span>
+
                             {cartCount > 0 && (
                                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                     {cartCount}
