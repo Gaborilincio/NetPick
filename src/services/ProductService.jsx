@@ -6,7 +6,7 @@ export const ProductService = {
   getProducts: async (filters = {}) => {
     try {
       const cleanFilters = Object.fromEntries(
-        Object.entries(filters).filter(([_, v]) => v != null && v !== '')
+        Object.entries(filters).filter(([_, v]) => v != null && v !== '' && v !== 'undefined')
       );
 
       const params = new URLSearchParams(cleanFilters).toString();
