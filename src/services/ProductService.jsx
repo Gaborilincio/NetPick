@@ -5,7 +5,12 @@ const API_URL = 'https://netpick-backend.onrender.com/api/v1/producto';
 export const ProductService = {
   getProducts: async (filters = {}) => {
     try {
-      const params = new URLSearchParams(filters).toString();
+      const cleanFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, v]) => v != null && v !== '')
+      );
+
+      const params = new URLSearchParams(cleanFilters).toString();
+      
       const response = await fetch(`${API_URL}?${params}`, {
         method: "GET",
         headers: {
@@ -13,13 +18,18 @@ export const ProductService = {
         },
       });
 
-      if (!response.ok) throw new Error("Error al cargar productos");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error Backend (${response.status}): ${errorText}`);
+      }
+
       return await response.json();
     } catch (error) {
-      console.error(error);
+      console.error("Falló la carga de productos:", error);
       return [];
     }
   },
+  
   getProductById: async (id) => {
     try {
       const response = await fetch(`${API_URL}/${id}`);
