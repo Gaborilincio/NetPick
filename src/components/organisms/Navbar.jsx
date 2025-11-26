@@ -7,7 +7,6 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
-import cartCount from '../../context/CartContext';
 
 function NavigationBar() {
     const { user, logout } = useAuth();
@@ -16,6 +15,8 @@ function NavigationBar() {
     const location = useLocation();
 
     const [showDropdown, setShowDropdown] = useState(false);
+
+    const IS_ADMIN = user?.rol === 'ADMIN' || user?.email === 'admin@netpick.com';
 
     const handleLogout = () => {
         logout();
@@ -35,6 +36,8 @@ function NavigationBar() {
             navigate('/compras');
         } else if (eventKey === 'edit-profile') {
             navigate('/perfil/editar');
+        } else if (eventKey === 'admin') {
+            navigate('/admin');
         }
         setShowDropdown(false);
     };
@@ -54,7 +57,19 @@ function NavigationBar() {
                         <Nav.Link as={Link} to="/categorias" active={location.pathname === '/categorias'}>
                             Categorías
                         </Nav.Link>
+
+                        {IS_ADMIN && (
+                            <Nav.Link 
+                                as={Link} 
+                                to="/admin" 
+                                className="text-warning fw-bold border border-warning rounded px-2 ms-2"
+                                active={location.pathname === '/admin'}
+                            >
+                                🛠 Panel Admin
+                            </Nav.Link>
+                        )}
                     </Nav>
+                    
                     <Nav className="ms-auto align-items-lg-center gap-3">
                         <Button
                             as={Link}
@@ -72,6 +87,7 @@ function NavigationBar() {
                                 </span>
                             )}
                         </Button>
+                        
                         {user ? (
                             <NavDropdown
                                 title={`Hola, ${user.nombre ? user.nombre.split(' ')[0] : 'Usuario'}`}
@@ -83,7 +99,16 @@ function NavigationBar() {
                             >
                                 <NavDropdown.Item eventKey="profile">Mi Perfil</NavDropdown.Item>
                                 <NavDropdown.Item eventKey="my-purchases">Mis Compras</NavDropdown.Item>
-                                <NavDropdown.Item eventKey="edit-profile">Editar Perfil</NavDropdown.Item>
+                                
+                                {IS_ADMIN && (
+                                    <>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item eventKey="admin" className="text-warning">
+                                            Ir al Panel Admin
+                                        </NavDropdown.Item>
+                                    </>
+                                )}
+
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item eventKey="logout" className="text-danger">
                                     Cerrar Sesión
