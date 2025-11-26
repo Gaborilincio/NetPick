@@ -65,7 +65,7 @@ function NavigationBar() {
                                 className="text-warning fw-bold border border-warning rounded px-2 ms-2"
                                 active={location.pathname === '/admin'}
                             >
-                                🛠 Panel Admin
+                                Panel Admin
                             </Nav.Link>
                         )}
                     </Nav>

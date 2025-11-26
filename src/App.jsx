@@ -29,6 +29,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/admin/products" element={<AdminProducts />} />
               <Route path="/productos" element={<Products />} />
               <Route path="/productos/:id" element={<ProductDetail />} />
               <Route path="/categorias" element={<Category />} />
@@ -37,7 +38,6 @@ function App() {
               <Route path="/perfil/editar" element={<EditProfile />} />
               <Route path="/recuperar" element={<ForgotPassword />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/admin/productos" element={<AdminProducts />} />
               <Route path="/register" element={<Register />} />
             </Routes>
           </main>

@@ -41,7 +41,7 @@ function AdminPage() {
               </div>
               <Text variant="h4">Productos</Text>
               <p className="text-muted">Agregar, editar o eliminar productos de la tienda.</p>
-              <Button className="btn-primary w-100 mt-3" onClick={() => alert('Aquí iría a /admin/productos')}>
+              <Button className="btn-primary w-100 mt-3" onClick={() => navigate('/admin/products')}>
                 Gestionar Productos
               </Button>
             </div>
