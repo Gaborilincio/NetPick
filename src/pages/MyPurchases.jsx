@@ -22,14 +22,15 @@ function MyPurchases() {
         }
     }, [user, authLoading]);
 
-    const fetchCompras = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const userId = Number(user.userId);
-            const data = await PurchaseService.getComprasByUserId(userId);
-            setCompras(data);
-        } catch (err) {
+ const fetchCompras = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const userId = Number(user.userId);
+             const token = user.token; 
+            const data = await PurchaseService.getComprasByUserId(userId, token); 
+            setCompras(data);
+        } catch (err) {
             setError(err.message || "Ocurrió un error al cargar tu historial de compras.");
         } finally {
             setLoading(false);
@@ -61,8 +62,8 @@ function MyPurchases() {
                 <Card.Header as="h1" className="bg-primary text-white text-center py-3">
                     🛍️ Mi Historial de Compras
                 </Card.Header>
+
                 <Card.Body className="p-4">
-                    
                     {error && <Alert variant="danger">{error}</Alert>}
 
                     {compras.length === 0 ? (
@@ -76,24 +77,33 @@ function MyPurchases() {
                                     <th># Venta</th>
                                     <th>Fecha</th>
                                     <th>Total</th>
-                                    <th>Detalle</th>
+                                    <th>Artículos</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
+
                             <tbody>
-                                {compras.map((compra) => (
-                                    <tr key={compra.idVenta}>
-                                        <td>{compra.idVenta}</td>
-                                        <td>{formatDate(compra.fechaVenta)}</td>
-                                        <td>{formatCurrency(compra.totalVenta || 0)}</td>
-                                        <td>{compra.descripcion || 'Ver detalle'}</td>
-                                        <td>
-                                            <span className={`badge ${compra.estado === 'Entregado' ? 'bg-success' : 'bg-warning text-dark'}`}>
-                                                {compra.estado || 'Procesando'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {compras.map((compra) => {
+                                    const estadoNombre = compra.estadoVenta?.nombre || 'Procesando';
+                                    const esEntregado = estadoNombre.toUpperCase().includes('ENTREGADO');
+                                    const itemCount = compra.detallesVenta?.length || 0;
+
+                                    return (
+                                        <tr key={compra.idVenta}>
+                                            <td>{compra.idVenta}</td>
+                                            <td>{formatDate(compra.fechaVenta)}</td>
+                                            <td>{formatCurrency(compra.totalVenta || 0)}</td>
+                                            <td>
+                                                {itemCount} {itemCount === 1 ? 'artículo' : 'artículos'}
+                                            </td>
+                                            <td>
+                                                <span className={`badge ${esEntregado ? 'bg-success' : 'bg-warning text-dark'}`}>
+                                                    {estadoNombre}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </Table>
                     )}
