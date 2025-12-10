@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { PurchaseService } from '../services/PurchaseService';
 import { useCart } from '../context/CartContext'; 
-import CheckoutSummary from '../organisms/CheckoutSummary';
-import PaymentForm from '../organisms/PaymentForm';
+import CheckoutSummary from '../components/organisms/CheckoutSummary';
+import PaymentForm from '../components/organisms/PaymentForm';
 
 const ID_USUARIO = 1; 
 const ID_ESTADO_INICIAL = 1;
