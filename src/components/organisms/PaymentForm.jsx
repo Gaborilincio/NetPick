@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PurchaseService } from '../services/PurchaseService'; 
+import { PurchaseService } from '../../services/PurchaseService'; 
 
 const PaymentForm = ({ onSubmit, loading }) => {
     const [metodosPago, setMetodosPago] = useState([]);
