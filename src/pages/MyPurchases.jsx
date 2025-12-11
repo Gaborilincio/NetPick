@@ -12,7 +12,7 @@ function MyPurchases() {
     const navigate = useNavigate();
     const { user, loading: authLoading } = useAuth();
     const [compras, setCompras] = useState([]);
-       const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -39,9 +39,9 @@ function MyPurchases() {
         }
     };
 
-    const formatCurrency = (amount) => 
+    const formatCurrency = (amount) =>
         new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' })
-        .format(amount);
+            .format(amount);
 
     const formatDate = (dateString) =>
         new Date(dateString).toLocaleDateString('es-CL', {
@@ -73,49 +73,51 @@ function MyPurchases() {
                             Aún no tienes compras registradas. ¡Explora nuestros productos!
                         </Alert>
                     ) : (
-                        <Table responsive striped bordered hover className="mt-3">
-                            <thead className="table-dark">
-                                <tr>
-                                    <th># Venta</th>
-                                    <th>Fecha</th>
-                                    <th>Total</th>
-                                    <th>Artículos</th>
-                                    <th>Estado</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
+                        <div className="table-responsive">
+                            <Table striped bordered hover className="mt-3">
+                                <thead className="table-dark">
+                                    <tr>
+                                        <th># Venta</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Artículos</th>
+                                        <th>Estado</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
 
-                            <tbody>
-                                {compras.map((compra) => {
-                                    const estadoNombre = compra.estadoVenta?.nombre || 'Procesando';
-                                    const esEntregado = estadoNombre.toUpperCase().includes('ENTREGADO');
-                                    const itemCount = compra.detallesVenta?.length || 0;
+                                <tbody>
+                                    {compras.map((compra) => {
+                                        const estadoNombre = compra.estadoVenta?.nombre || 'Procesando';
+                                        const esEntregado = estadoNombre.toUpperCase().includes('ENTREGADO');
+                                        const itemCount = compra.detallesVenta?.length || 0;
 
-                                    return (
-                                        <tr key={compra.idVenta}>
-                                            <td>{compra.idVenta}</td>
-                                            <td>{formatDate(compra.fechaVenta)}</td>
-                                            <td>{formatCurrency(compra.totalVenta || 0)}</td>
-                                            <td>{itemCount} {itemCount === 1 ? 'artículo' : 'artículos'}</td>
-                                            <td>
-                                                <span className={`badge ${esEntregado ? 'bg-success' : 'bg-warning text-dark'}`}>
-                                                    {estadoNombre}
-                                                </span>
-                                            </td>
-                                            <td className="text-center">
-                                                <Button 
-                                                    variant="outline-primary"
-                                                    size="sm"
-                                                    onClick={() => navigate(`/orden/${compra.idVenta}`)}
-                                                >
-                                                    Ver detalle
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </Table>
+                                        return (
+                                            <tr key={compra.idVenta}>
+                                                <td>{compra.idVenta}</td>
+                                                <td>{formatDate(compra.fechaVenta)}</td>
+                                                <td>{formatCurrency(compra.totalVenta || 0)}</td>
+                                                <td>{itemCount} {itemCount === 1 ? 'artículo' : 'artículos'}</td>
+                                                <td>
+                                                    <span className={`badge ${esEntregado ? 'bg-success' : 'bg-warning text-dark'}`}>
+                                                        {estadoNombre}
+                                                    </span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <Button
+                                                        variant="outline-primary"
+                                                        size="sm"
+                                                        onClick={() => navigate(`/orden/${compra.idVenta}`)}
+                                                    >
+                                                        Ver detalle
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </Table>
+                        </div>
                     )}
                 </Card.Body>
             </Card>
