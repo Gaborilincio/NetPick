@@ -14,9 +14,11 @@ function MyPurchases() {
     const [compras, setCompras] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     useEffect(() => {
-        if (authLoading === false && user && user.userId) {
-            console.log("Condición estricta cumplida. Disparando fetchCompras.");
+        const isUserFullyReady = authLoading === false && user && user.userId && user.token;
+
+        if (isUserFullyReady) {
             fetchCompras();
         } else if (authLoading === false && !user) {
             setError("Debes iniciar sesión para ver tus compras.");
@@ -32,15 +34,12 @@ function MyPurchases() {
             const token = user?.token;
 
             if (!rawUserId || !token) {
-                console.log("DEBUG: Falta userId o token. Terminando fetch prematuramente.");
+                console.error("Datos faltantes.", { ID_Detectado: rawUserId, Token_Detectado: token, ObjetoUserCompleto: user });
                 setLoading(false);
                 return;
             }
 
             const idUser = Number(rawUserId);
-
-            console.log("ID de Usuario para Fetch (LISTO):", idUser);
-
             const data = await PurchaseService.getComprasByUserId(idUser, token);
             setCompras(data);
         } catch (err) {
@@ -52,15 +51,10 @@ function MyPurchases() {
     };
 
     const formatCurrency = (amount) =>
-        new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' })
-            .format(amount);
+        new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(amount);
 
     const formatDate = (dateString) =>
-        new Date(dateString).toLocaleDateString('es-CL', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+        new Date(dateString).toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
 
     if (authLoading || loading) {
         return (
@@ -100,9 +94,9 @@ function MyPurchases() {
 
                                 <tbody>
                                     {compras.map((compra) => {
-                                        const estadoNombre = compra.estadoVenta?.nombre || 'Procesando';
+                                        const estadoNombre = compra.estadoNombre || 'Procesando';
                                         const esEntregado = estadoNombre.toUpperCase().includes('ENTREGADO');
-                                        const itemCount = compra.detallesVenta?.length || 0;
+                                        const itemCount = compra.productos?.length || compra.detallesVenta?.length || 0;
 
                                         return (
                                             <tr key={compra.idVenta}>
