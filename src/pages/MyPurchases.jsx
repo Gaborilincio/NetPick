@@ -15,21 +15,17 @@ function MyPurchases() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        console.log("Estado de Autenticación - authLoading:", authLoading);
-        console.log("Objeto User:", user); 
-        
-        if (!authLoading && user && user.userId) { 
-            console.log("Condición cumplida. Disparando fetchCompras.");
-            fetchCompras();
-        } else if (!authLoading && !user) {
-            setError("Debes iniciar sesión para ver tus compras.");
-            setLoading(false);
-        } else if (!authLoading && user && !user.userId) { 
-            setError("Error: No se encontró el ID de usuario.");
-            setLoading(false);
-        }
-    }, [user, authLoading]);
+useEffect(() => {
+    console.log("Estado de Autenticación - authLoading:", authLoading);
+    console.log("Objeto User:", user); 
+    if (user && user.userId) { 
+        console.log("Condición simplificada cumplida. Disparando fetchCompras.");
+        fetchCompras();
+    } else if (!authLoading && !user) {
+        setError("Debes iniciar sesión para ver tus compras.");
+        setLoading(false);
+    } 
+}, [user, authLoading]);
 
     const fetchCompras = async () => {
         setLoading(true);
