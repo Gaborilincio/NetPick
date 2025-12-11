@@ -10,7 +10,7 @@ import Button from '../components/atoms/Button';
 
 function MyPurchases() {
     const navigate = useNavigate();
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading = true } = useAuth();
     const [compras, setCompras] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -19,13 +19,13 @@ function MyPurchases() {
         console.log("Estado de Autenticación - authLoading:", authLoading);
         console.log("Objeto User:", user); 
         
-        if (!authLoading && user && user.idUser) { 
-            console.log("✔️ Condición cumplida. Disparando fetchCompras.");
+        if (!authLoading && user && user.userId) { 
+            console.log("Condición cumplida. Disparando fetchCompras.");
             fetchCompras();
         } else if (!authLoading && !user) {
             setError("Debes iniciar sesión para ver tus compras.");
             setLoading(false);
-        } else if (!authLoading && user && !user.idUser) { 
+        } else if (!authLoading && user && !user.userId) { 
             setError("Error: No se encontró el ID de usuario.");
             setLoading(false);
         }
@@ -35,16 +35,16 @@ function MyPurchases() {
         setLoading(true);
         setError(null);
         try {
-            const idUser = Number(user?.idUser);
+            const userId = Number(user?.userId);
             const token = user?.token;           
 
-            if (!idUser || !token) {
+            if (!userId || !token) {
                  throw new Error("ID de usuario o token no disponibles.");
             }
 
-            console.log("ID de Usuario para Fetch:", idUser); 
+            console.log("ID de Usuario para Fetch:", userId); 
 
-            const data = await PurchaseService.getComprasByUserId(idUser, token);
+            const data = await PurchaseService.getComprasByUserId(userId, token);
             setCompras(data);
         } catch (err) {
             console.error("Fallo durante el fetch:", err); 
