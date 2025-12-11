@@ -96,6 +96,7 @@ function NavigationBar() {
                                 show={showDropdown}
                                 onToggle={handleToggle}
                                 onSelect={handleSelect}
+                                container={document.body}
                             >
                                 <NavDropdown.Item eventKey="profile">Mi Perfil</NavDropdown.Item>
                                 <NavDropdown.Item eventKey="my-purchases">Mis Compras</NavDropdown.Item>
