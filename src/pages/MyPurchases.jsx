@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { PurchaseService } from '../services/PurchaseService';
 import { useNavigate } from 'react-router-dom';
-import Container from '../components/atoms/Container';
-import Card from '../components/atoms/Card';
-import Table from '../components/atoms/Table';
-import Alert from '../components/atoms/Alert';
-import Button from '../components/atoms/Button';
-
 function MyPurchases() {
     const navigate = useNavigate();
     const { user, loading: authLoading = true } = useAuth();
@@ -15,45 +9,35 @@ function MyPurchases() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-useEffect(() => {
-        const idDelUsuario = user?.userId || user?.id;
+    useEffect(() => {
+        const idDelUsuario = user?.userId || user?.id || user?.idUsuario; 
         const tieneToken = user?.token;
-
         const isUserFullyReady = authLoading === false && user && idDelUsuario && tieneToken;
 
         if (isUserFullyReady) {
-            console.log("Usuario listo. ID:", idDelUsuario);
-            fetchCompras();
+            console.log("Usuario listo para fetch. ID:", idDelUsuario);
+            fetchCompras(idDelUsuario, tieneToken);
         } else if (authLoading === false && !user) {
-            console.log("No hay usuario logueado.");
             setError("Debes iniciar sesión para ver tus compras.");
             setLoading(false);
         } else if (authLoading === false && user) {
-            console.error("Usuario incompleto detectado:", user);
-            setError("Error en datos de sesión. Por favor, relogueate.");
-            setLoading(false);
+            console.error("Usuario incompleto:", user);
+            if(idDelUsuario) fetchCompras(idDelUsuario, "TOKEN_DUMMY");
+            else setLoading(false);
         }
-    }, [user, authLoading])
+    }, [user, authLoading]);
 
-    const fetchCompras = async () => {
+    const fetchCompras = async (idUser, token) => {
         setLoading(true);
         setError(null);
         try {
-            const rawUserId = user?.userId;
-            const token = user?.token;
-
-            if (!rawUserId || !token) {
-                console.error("Datos faltantes.", { ID_Detectado: rawUserId, Token_Detectado: token, ObjetoUserCompleto: user });
-                setLoading(false);
-                return;
-            }
-
-            const idUser = Number(rawUserId);
+            console.log(`Fetching historial para ID: ${idUser}`);
             const data = await PurchaseService.getComprasByUserId(idUser, token);
+            console.log("Datos recibidos:", data); 
             setCompras(data);
         } catch (err) {
-            console.error("Fallo durante el fetch:", err);
-            setError(err.message || "Ocurrió un error al cargar tu historial de compras.");
+            console.error("Fallo fetch:", err);
+            setError(err.message || "Error al cargar historial.");
         } finally {
             setLoading(false);
         }
@@ -64,32 +48,38 @@ useEffect(() => {
 
     const formatDate = (dateString) =>
         new Date(dateString).toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
-
     if (authLoading || loading) {
         return (
-            <Container className="text-center mt-5">
-                <p className="mt-3">Cargando historial de compras...</p>
-            </Container>
+            <div className="container text-center mt-5">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                </div>
+                <p className="mt-3">Cargando historial...</p>
+            </div>
         );
     }
 
     return (
-        <Container className="my-5">
-            <Card className="shadow-lg border-0">
-                <Card.Header as="h1" className="bg-primary text-white text-center py-3">
-                    🛍️ Mi Historial de Compras
-                </Card.Header>
+        <div className="container my-5">
+            <div className="card shadow-lg border-0">
+                <div className="card-header bg-primary text-white text-center py-3">
+                    <h1 className="h3 mb-0">🛍️ Mi Historial de Compras</h1>
+                </div>
 
-                <Card.Body className="p-4">
-                    {error && <Alert variant="danger">{error}</Alert>}
+                <div className="card-body p-4">
+                    {error && (
+                        <div className="alert alert-danger" role="alert">
+                            {error}
+                        </div>
+                    )}
 
-                    {compras.length === 0 ? (
-                        <Alert variant="info" className="text-center">
+                    {!error && compras.length === 0 ? (
+                        <div className="alert alert-info text-center">
                             Aún no tienes compras registradas. ¡Explora nuestros productos!
-                        </Alert>
+                        </div>
                     ) : (
                         <div className="table-responsive">
-                            <Table striped bordered hover className="mt-3">
+                            <table className="table table-striped table-bordered table-hover mt-3">
                                 <thead className="table-dark">
                                     <tr>
                                         <th># Venta</th>
@@ -100,43 +90,41 @@ useEffect(() => {
                                         <th>Acción</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     {compras.map((compra) => {
-                                        const estadoNombre = compra.estadoNombre || 'Procesando';
-                                        const esEntregado = estadoNombre.toUpperCase().includes('ENTREGADO');
+                                        const estadoNombre = compra.estadoNombre || compra.estado?.nombre || 'Procesando';
+                                        const esEntregado = estadoNombre.toString().toUpperCase().includes('ENTREGADO');
                                         const itemCount = compra.productos?.length || compra.detallesVenta?.length || 0;
 
                                         return (
-                                            <tr key={compra.idVenta}>
+                                            <tr key={compra.idVenta || Math.random()}>
                                                 <td>{compra.idVenta}</td>
                                                 <td>{formatDate(compra.fechaVenta)}</td>
                                                 <td>{formatCurrency(compra.totalVenta || 0)}</td>
-                                                <td>{itemCount} {itemCount === 1 ? 'artículo' : 'artículos'}</td>
+                                                <td>{itemCount} arts.</td>
                                                 <td>
                                                     <span className={`badge ${esEntregado ? 'bg-success' : 'bg-warning text-dark'}`}>
                                                         {estadoNombre}
                                                     </span>
                                                 </td>
                                                 <td className="text-center">
-                                                    <Button
-                                                        variant="outline-primary"
-                                                        size="sm"
+                                                    <button
+                                                        className="btn btn-outline-primary btn-sm"
                                                         onClick={() => navigate(`/orden/${compra.idVenta}`)}
                                                     >
                                                         Ver detalle
-                                                    </Button>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         );
                                     })}
                                 </tbody>
-                            </Table>
+                            </table>
                         </div>
                     )}
-                </Card.Body>
-            </Card>
-        </Container>
+                </div>
+            </div>
+        </div>
     );
 }
 
