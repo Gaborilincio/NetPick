@@ -26,31 +26,34 @@ export const PurchaseService = {
     realizarCompra: async (ventaRequestDTO, token) => {
         const url = `${API_BASE_URL}/checkout`;
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(ventaRequestDTO)
-            });
+try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(ventaRequestDTO)
+        });
 
-            if (!response.ok) {
-                let errorMessage = `Error HTTP ${response.status}: ${response.statusText}`;
+        if (!response.ok) {
+            const responseClone = response.clone(); 
+            let errorMessage = `Error HTTP ${response.status}: ${response.statusText}`;
 
-                try {
-                    const errorBody = await response.json();
-                    errorMessage = errorBody.message || JSON.stringify(errorBody);
-                } catch (e) {
-                    const textError = await response.text();
-                    errorMessage = `Error ${response.status}: ${textError.substring(0, 100)}...`;
-                }
-                throw new Error(errorMessage);
+            try {
+                const errorBody = await responseClone.json(); 
+                errorMessage = errorBody.message || JSON.stringify(errorBody);
+            } catch (e) {
+                const textError = await response.text(); 
+                errorMessage = `Error ${response.status}: ${textError.substring(0, 100)}...`;
             }
-            const data = await response.json();
-            return data;
-        } catch (error) {
+            
+            throw new Error(errorMessage);
+        }
+        const data = await response.json(); 
+        return data;
+        
+    } catch (error) {
             console.error("Error al realizar la compra:", error);
             throw error;
         }
