@@ -13,12 +13,11 @@ import Category from './pages/Category';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import Cart from './pages/Cart';
-import ForgotPassword from './pages/ForgotPassword';
+import ForgotPassword from './pages/ForgotPassword';  
 import AdminProducts from './pages/AdminProducts';
 import AdminPage from './pages/AdminPage';
 import CheckoutPage from './pages/CheckoutPage'; 
 import MyPurchases from './pages/MyPurchases'; 
-
 import './styles/global.css';
 
 

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { PurchaseService } from '../services/PurchaseService';
 import { useCart } from '../context/CartContext'; 
+import { useAuth } from "../context/AuthContext";
 import CheckoutSummary from '../components/organisms/CheckoutSummary';
 import PaymentForm from '../components/organisms/PaymentForm';
 
-const ID_USUARIO = 1; 
-const ID_ESTADO_INICIAL = 1;
+const ID_ESTADO_INICIAL = 1; 
 
 const CheckoutPage = () => {
+    const { user } = useAuth();
     const { 
         cart, 
         cartTotal, 
@@ -18,14 +19,28 @@ const CheckoutPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
+    if (!user) {
+        return (
+            <div className="max-w-4xl mx-auto p-8 mt-10">
+                <h2 className="text-3xl font-bold text-gray-800">Debes iniciar sesión</h2>
+                <p className="mt-4 text-lg text-red-500">
+                    Inicia sesión para continuar con tu compra.
+                </p>
+            </div>
+        );
+    }
+
     if (cart.length === 0 && !success) {
         return (
             <div className="max-w-4xl mx-auto p-8 mt-10">
                 <h2 className="text-3xl font-bold text-gray-800">Finalizar Compra</h2>
-                <p className="mt-4 text-lg text-red-500">El carrito está vacío. Agrega productos para proceder.</p>
+                <p className="mt-4 text-lg text-red-500">
+                    El carrito está vacío. Agrega productos para proceder.
+                </p>
             </div>
         );
     }
+
     const handlePagar = async ({ idMetodoPago, idMetodoEnvio }) => {
         setLoading(true);
         setError(null);
@@ -33,12 +48,14 @@ const CheckoutPage = () => {
 
         try {
             const ventaRequestDTO = generateVentaRequestDTO(
-                ID_USUARIO,
+                user.idUsuario,   // 👈 USUARIO REAL
                 idMetodoPago, 
                 idMetodoEnvio, 
                 ID_ESTADO_INICIAL
             );
+
             const ventaFinal = await PurchaseService.realizarCompra(ventaRequestDTO);
+
             setSuccess(ventaFinal);
             clearCartAfterSuccess(); 
             
@@ -51,7 +68,10 @@ const CheckoutPage = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-8 mt-10">
-            <h1 className="text-4xl font-extrabold mb-8 text-gray-900">Checkout Final</h1>
+            
+            <h1 className="text-4xl font-extrabold mb-8 text-gray-900">
+                Checkout Final
+            </h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <CheckoutSummary cart={cart} total={cartTotal} />
@@ -64,10 +84,14 @@ const CheckoutPage = () => {
                     <p>{error}</p>
                 </div>
             )}
+
             {success && (
                 <div className="mt-8 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                     <p className="font-bold">¡Compra Exitosa!</p>
-                    <p>Venta ID: {success.idVenta}. Total: ${success.totalVenta.toLocaleString('es-CL')}</p>
+                    <p>
+                        Venta ID: {success.idVenta}. Total: $
+                        {success.totalVenta.toLocaleString('es-CL')}
+                    </p>
                 </div>
             )}
         </div>
