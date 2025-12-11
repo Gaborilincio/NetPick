@@ -14,7 +14,7 @@ import Category from './pages/Category';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import TermsPage from './pages/TermsPage';
-import WorkWithUsPage from './pages/WorkWithUsPage';
+import WorkWithUsPage from './pages/WorkWithUs';
 import Cart from './pages/Cart';
 import ForgotPassword from './pages/ForgotPassword';
 import AdminProducts from './pages/AdminProducts';
