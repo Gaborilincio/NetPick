@@ -13,6 +13,8 @@ import ProductDetail from './pages/ProductDetail';
 import Category from './pages/Category';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import TermsPage from './pages/TermsPage';
+import WorkWithUsPage from './pages/WorkWithUsPage';
 import Cart from './pages/Cart';
 import ForgotPassword from './pages/ForgotPassword';
 import AdminProducts from './pages/AdminProducts';
@@ -37,6 +39,8 @@ function App() {
                             <Route path="/carrito" element={<Cart />} />
                             <Route path="/checkout" element={<CheckoutPage />} />
                             <Route path="/my-purchases" element={<MyPurchases />} />
+                            <Route path="/terminos" element={<TermsPage />} />
+                            <Route path="/trabaja-con-nosotros" element={<WorkWithUsPage />} /> 
                             <Route path="/perfil" element={<Profile />} />
                             <Route path="/perfil/editar" element={<EditProfile />} />
                             <Route path="/recuperar" element={<ForgotPassword />} />

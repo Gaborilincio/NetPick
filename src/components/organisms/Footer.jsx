@@ -3,41 +3,69 @@ import Container from '../atoms/Container';
 import Row from '../atoms/Row';
 import Col from '../atoms/Col';
 import Text from '../atoms/Text';
-import Link from '../atoms/Link';
+import Link from '../atoms/Link'; 
 import '../../styles/Footer.css'; 
 
 function Footer() {
+  
+  const handleMockSubmit = (e) => {
+    e.preventDefault();
+    alert("¡Suscrito al newsletter (simulado)!");
+  };
+
   return (
-    <footer className="pie-pagina">
+    <footer className="bg-dark text-white pt-5 pb-3 mt-auto">
       <Container>
         <Row>
-          <Col md={4}>
-            <Text variant="h5" className="nombre-empresa">NetPick</Text>
-            <Text variant="p" className="descripcion-empresa">
-              Tu tienda online de confianza para tecnología, hogar y más.
+          <Col className="col-12 col-md-3 mb-4">
+            <Text variant="h5" className="text-warning fw-bold mb-3">NetPick</Text>
+            <Text variant="p" className="text-white-50 small">
+              Tu tienda online de confianza.
             </Text>
           </Col>
-          <Col md={4}>
-            <Text variant="h6" className="titulo-seccion">Enlaces Rápidos</Text>
-            <div className="d-flex flex-column">
-              <Link to="/products" className="enlace-rapido">Productos</Link>
-              <Link to="/category/tecnologia" className="enlace-rapido">Tecnología</Link>
-              <Link to="/category/hogar" className="enlace-rapido">Hogar</Link>
-              <Link to="/category/accesorios" className="enlace-rapido">Accesorios</Link>
+          <Col className="col-6 col-md-3 mb-4">
+            <Text variant="h6" className="text-uppercase fw-bold mb-3 text-white">Tienda</Text>
+            <div className="d-flex flex-column gap-2">
+              <Link to="/productos" className="text-white-50 text-decoration-none small hover-light">Productos</Link>
+              <Link to="/carrito" className="text-white-50 text-decoration-none small hover-light">Mi Carrito</Link>
+              <Link to="/my-purchases" className="text-white-50 text-decoration-none small hover-light">Mis Compras</Link>
             </div>
           </Col>
-          <Col md={4}>
-            <Text variant="h6" className="titulo-seccion">Contacto</Text>
-            <Text variant="p" className="informacion-contacto">contacto@netpick.com</Text>
-            <Text variant="p" className="informacion-contacto">+56 9 1234 5678</Text>
-            <Text variant="p" className="informacion-contacto">Santiago, Chile</Text>
+          <Col className="col-6 col-md-3 mb-4">
+            <Text variant="h6" className="text-uppercase fw-bold mb-3 text-white">Información</Text>
+            <div className="d-flex flex-column gap-2">
+              <Link to="/trabaja-con-nosotros" className="text-white-50 text-decoration-none small hover-light">
+                Trabaja con nosotros
+              </Link>
+              <Link to="/terminos" className="text-white-50 text-decoration-none small hover-light">
+                Términos y condiciones
+              </Link>
+              <Link to="/terminos" className="text-white-50 text-decoration-none small hover-light">
+                Política de privacidad
+              </Link>
+            </div>
+          </Col>
+
+          <Col className="col-12 col-md-3 mb-4">
+            <Text variant="h6" className="text-uppercase fw-bold mb-3 text-white">Newsletter</Text>
+            <form onSubmit={handleMockSubmit} className="d-flex gap-2">
+              <input 
+                type="email" 
+                placeholder="Tu correo" 
+                className="form-control form-control-sm bg-secondary text-white border-secondary"
+                style={{ maxWidth: '140px' }}
+              />
+              <button className="btn btn-primary btn-sm">Enviar</button>
+            </form>
           </Col>
         </Row>
-        <hr className="linea-divisoria" />
+
+        <hr className="border-secondary my-4" />
+
         <Row>
           <Col className="text-center">
-            <Text variant="p" className="texto-derechos">
-              &copy; 2024 NetPick. Todos los derechos reservados.
+            <Text variant="p" className="text-white-50 small mb-0">
+              &copy; {new Date().getFullYear()} NetPick.
             </Text>
           </Col>
         </Row>
