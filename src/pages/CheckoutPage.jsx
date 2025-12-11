@@ -9,6 +9,7 @@ const ID_ESTADO_INICIAL = 1;
 
 const CheckoutPage = () => {
     const { user } = useAuth();
+    console.log("Objeto User:", user);
     const { 
         cart, 
         cartTotal, 
