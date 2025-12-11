@@ -49,10 +49,10 @@ export const AuthService = {
     return json;
   },
 
-  getCurrentUser: () => {
-    const user = localStorage.getItem("usuario");
-    return user ? JSON.parse(user) : null;
-  },
+getCurrentUser: () => {
+    const user = localStorage.getItem("usuario");
+    return user ? JSON.parse(user) : null; 
+},
 
   logout: () => {
     localStorage.removeItem("usuario");
@@ -63,7 +63,10 @@ export const AuthService = {
   },
 
   updateProfile: async (userData) => {
-    const token = localStorage.getItem('token'); 
+    const fullUser = JSON.parse(localStorage.getItem('usuario'));
+    const token = fullUser?.token; 
+
+    if (!token) throw new Error("Token de autenticación no encontrado.");
 
     try {
       const response = await fetch(`${API_URL}/profile`, { 
