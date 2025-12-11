@@ -1,12 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react'; // 1. Importar Hooks
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
+import { PurchaseService } from '../services/PurchaseService'; // 2. Importar el Servicio
 import UserProfileSection from '../components/organisms/UserProfileSection';
 import '../styles/Profile.css';
 
 function Profile() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth(); 
+  const { user, logout } = useAuth();
+  
+  const [pedidosRecientes, setPedidosRecientes] = useState([]);
+
+  useEffect(() => {
+    const idDelUsuario = user?.userId || user?.id || user?.idUsuario;
+    const tieneToken = user?.token;
+
+    if (idDelUsuario && tieneToken) {
+      fetchRecentOrders(idDelUsuario, tieneToken);
+    }
+  }, [user]);
+
+  const fetchRecentOrders = async (idUser, token) => {
+    try {
+      const data = await PurchaseService.getComprasByUserId(idUser, token);
+      const sortedData = data.sort((a, b) => new Date(b.fechaVenta) - new Date(a.fechaVenta)).slice(0, 3);
+      const mappedOrders = sortedData.map(compra => {
+        const estado = compra.estadoNombre || compra.estadoVenta?.nombre || 'Procesando';
+        const itemCount = compra.productos?.length || compra.detallesVenta?.length || 0;
+        const total = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(compra.totalVenta);
+
+        return {
+          id: compra.idVenta,
+          producto: `Compra #${compra.idVenta} - ${itemCount} arts. (${total})`, 
+          fecha: new Date(compra.fechaVenta).toLocaleDateString('es-CL'), 
+          estado: estado
+        };
+      });
+
+      setPedidosRecientes(mappedOrders);
+
+    } catch (error) {
+      console.error("Error cargando pedidos recientes:", error);
+      setPedidosRecientes([]);
+    }
+  };
+
+  const handleEditProfile = () => {
+    navigate('/perfil/editar');
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   if (!user) {
     return (
@@ -21,41 +67,26 @@ function Profile() {
     email: user.correo || 'N/A',
     telefono: user.telefono || 'Sin teléfono',
     direccion: user.direccion || 'Sin dirección registrada',
-    fechaRegistro: '15 Enero 2024', 
+    fechaRegistro: user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString() : 'Cliente Registrado', 
     avatar: '/img/default-avatar.png'
-  };
-
-  const pedidosRecientes = [
-    { id: 1, producto: 'Smartphone Samsung', fecha: '2024-01-20', estado: 'Entregado' },
-    { id: 2, producto: 'Audífonos Sony', fecha: '2024-01-18', estado: 'En camino' },
-    { id: 3, producto: 'Cafetera Philips', fecha: '2024-01-15', estado: 'Entregado' }
-  ];
-
-  const handleEditProfile = () => {
-    navigate('/perfil/editar'); 
-  };
-
-  const handleLogout = () => {
-    logout(); 
-    navigate('/');
   };
 
   return (
     <div className="perfil-container">
       <UserProfileSection 
         user={userData} 
-        pedidosRecientes={pedidosRecientes}
+        pedidosRecientes={pedidosRecientes} 
         onEditProfile={handleEditProfile}
         onLogout={handleLogout}
       />
       
       {/* Botón para navegar a Mis Compras */}
-      <div className="text-center mt-4">
+      <div className="text-center mt-4 mb-5">
         <button 
-          className="btn btn-info btn-lg" 
+          className="btn btn-primary btn-lg" 
           onClick={() => navigate('/my-purchases')}
         >
-          Ver Historial de Compras
+          Ver Historial Completo
         </button>
       </div>
     </div>
