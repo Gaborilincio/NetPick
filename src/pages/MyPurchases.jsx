@@ -14,14 +14,11 @@ function MyPurchases() {
     const [compras, setCompras] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     useEffect(() => {
-        console.log("Estado de Autenticación - authLoading:", authLoading);
-        console.log("Objeto User:", user);
-        if (user && user.userId) {
-            console.log("Condición simplificada cumplida. Disparando fetchCompras.");
+        if (authLoading === false && user && user.userId) {
+            console.log("Condición estricta cumplida. Disparando fetchCompras.");
             fetchCompras();
-        } else if (!authLoading && !user) {
+        } else if (authLoading === false && !user) {
             setError("Debes iniciar sesión para ver tus compras.");
             setLoading(false);
         }
