@@ -24,7 +24,7 @@ export const PurchaseService = {
     },
 
     realizarCompra: async (ventaRequestDTO, token) => {
-        const url = `${API_BASE_URL}/realizarCompra`;
+        const url = `${API_BASE_URL}/checkout`;
 
         try {
             const response = await fetch(url, {
