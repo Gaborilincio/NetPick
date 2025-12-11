@@ -10,7 +10,7 @@ function Footer() {
   
   const handleMockSubmit = (e) => {
     e.preventDefault();
-    alert("¡Suscrito al newsletter (simulado)!");
+    alert("¡Suscrito al newsletter!");
   };
 
   return (

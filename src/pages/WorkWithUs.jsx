@@ -45,12 +45,12 @@ function WorkWithUsPage() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label fw-bold">Nombre Completo</label>
-                  <input type="text" className="form-control" required placeholder="Ej: Juan Pérez" />
+                  <input type="text" className="form-control" required placeholder="Nombre completo" />
                 </div>
 
                 <div className="mb-3">
                   <label className="form-label fw-bold">Correo Electrónico</label>
-                  <input type="email" className="form-control" required placeholder="Ej: juan@email.com" />
+                  <input type="email" className="form-control" required placeholder="Correo eléctronico" />
                 </div>
 
                 <div className="mb-3">
