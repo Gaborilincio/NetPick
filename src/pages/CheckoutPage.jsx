@@ -43,17 +43,17 @@ const CheckoutPage = () => {
     }
 
 const handlePagar = async ({ idMetodoPago, idMetodoEnvio }) => {
-        setLoading(true);
-        setError(null);
-        setSuccess(null);
-        try {
-            const token = user.token || user.jwt; 
-            const ventaRequestDTO = generateVentaRequestDTO(
-                user.idUsuario,   
-                idMetodoPago, 
-                idMetodoEnvio, 
-                ID_ESTADO_INICIAL
-            );
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+        const token = user.token || user.jwt; 
+        const ventaRequestDTO = generateVentaRequestDTO(
+            user.userId,   
+            idMetodoPago, 
+            idMetodoEnvio, 
+            ID_ESTADO_INICIAL
+        );
             const ventaFinal = await PurchaseService.realizarCompra(ventaRequestDTO, token);
             setSuccess(ventaFinal);
             clearCartAfterSuccess();
