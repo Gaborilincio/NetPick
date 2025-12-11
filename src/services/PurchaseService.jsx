@@ -9,6 +9,7 @@ export const PurchaseService = {
         }
 
         const url = `${API_BASE_URL}/historial/${userId}`;
+        console.log("INTENTANDO FETCH A URL:", url);
 
         try {
             const response = await fetch(url, {
