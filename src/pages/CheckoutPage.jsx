@@ -5,8 +5,6 @@ import { useAuth } from "../context/AuthContext";
 import CheckoutSummary from '../components/organisms/CheckoutSummary';
 import PaymentForm from '../components/organisms/PaymentForm';
 
-const ID_ESTADO_INICIAL = 1; 
-
 const CheckoutPage = () => {
     const { user } = useAuth();
     const { 
@@ -48,7 +46,7 @@ const CheckoutPage = () => {
 
         try {
             const ventaRequestDTO = generateVentaRequestDTO(
-                user.idUsuario,   // 👈 USUARIO REAL
+                user.idUsuario,   
                 idMetodoPago, 
                 idMetodoEnvio, 
                 ID_ESTADO_INICIAL
