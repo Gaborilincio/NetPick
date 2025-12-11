@@ -67,7 +67,9 @@ function Profile() {
     email: user.correo || 'N/A',
     telefono: user.telefono || 'Sin teléfono',
     direccion: user.direccion || 'Sin dirección registrada',
-    fechaRegistro: user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString() : 'Cliente Registrado', 
+    fechaRegistro: user.fechaRegistro 
+        ? new Date(user.fechaRegistro).toLocaleDateString() 
+        : new Date().toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }), 
     avatar: '/img/default-avatar.png'
   };
 
