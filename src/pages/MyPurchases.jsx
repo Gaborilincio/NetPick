@@ -16,13 +16,17 @@ function MyPurchases() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-            setLoading(false);
-          console.log("USER:", user);
-            console.log("COMPRAS PRE-FETCH:", compras);
-        if (!authLoading && user) {
+        console.log("Estado de Autenticación - authLoading:", authLoading);
+        console.log("Objeto User:", user); 
+        
+        if (!authLoading && user && user.idUser) { 
+            console.log("✔️ Condición cumplida. Disparando fetchCompras.");
             fetchCompras();
         } else if (!authLoading && !user) {
             setError("Debes iniciar sesión para ver tus compras.");
+            setLoading(false);
+        } else if (!authLoading && user && !user.idUser) { 
+            setError("Error: No se encontró el ID de usuario.");
             setLoading(false);
         }
     }, [user, authLoading]);
@@ -31,11 +35,19 @@ function MyPurchases() {
         setLoading(true);
         setError(null);
         try {
-            const idUser = Number(user.idUser);
-            const token = user.token;
+            const idUser = Number(user?.idUser);
+            const token = user?.token;           
+
+            if (!idUser || !token) {
+                 throw new Error("ID de usuario o token no disponibles.");
+            }
+
+            console.log("ID de Usuario para Fetch:", idUser); 
+
             const data = await PurchaseService.getComprasByUserId(idUser, token);
             setCompras(data);
         } catch (err) {
+            console.error("Fallo durante el fetch:", err); 
             setError(err.message || "Ocurrió un error al cargar tu historial de compras.");
         } finally {
             setLoading(false);
