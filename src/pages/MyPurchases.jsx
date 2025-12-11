@@ -15,35 +15,39 @@ function MyPurchases() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-useEffect(() => {
-    console.log("Estado de Autenticación - authLoading:", authLoading);
-    console.log("Objeto User:", user); 
-    if (user && user.userId) { 
-        console.log("Condición simplificada cumplida. Disparando fetchCompras.");
-        fetchCompras();
-    } else if (!authLoading && !user) {
-        setError("Debes iniciar sesión para ver tus compras.");
-        setLoading(false);
-    } 
-}, [user, authLoading]);
+    useEffect(() => {
+        console.log("Estado de Autenticación - authLoading:", authLoading);
+        console.log("Objeto User:", user);
+        if (user && user.userId) {
+            console.log("Condición simplificada cumplida. Disparando fetchCompras.");
+            fetchCompras();
+        } else if (!authLoading && !user) {
+            setError("Debes iniciar sesión para ver tus compras.");
+            setLoading(false);
+        }
+    }, [user, authLoading]);
 
     const fetchCompras = async () => {
         setLoading(true);
         setError(null);
         try {
-            const userId = Number(user?.userId);
-            const token = user?.token;           
+            const rawUserId = user?.userId;
+            const token = user?.token;
 
-            if (!userId || !token) {
-                 throw new Error("ID de usuario o token no disponibles.");
+            if (!rawUserId || !token) {
+                console.log("DEBUG: Falta userId o token. Terminando fetch prematuramente.");
+                setLoading(false);
+                return;
             }
 
-            console.log("ID de Usuario para Fetch:", userId); 
+            const idUser = Number(rawUserId);
 
-            const data = await PurchaseService.getComprasByUserId(userId, token);
+            console.log("ID de Usuario para Fetch (LISTO):", idUser);
+
+            const data = await PurchaseService.getComprasByUserId(idUser, token);
             setCompras(data);
         } catch (err) {
-            console.error("Fallo durante el fetch:", err); 
+            console.error("Fallo durante el fetch:", err);
             setError(err.message || "Ocurrió un error al cargar tu historial de compras.");
         } finally {
             setLoading(false);
