@@ -7,14 +7,14 @@ import Card from '../components/atoms/Card';
 import Text from '../components/atoms/Text';
 import Button from '../components/atoms/Button';
 import Image from '../components/atoms/Image';
-import { useCart } from '../context/CartContext'; 
+import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
 function Cart() {
   const navigate = useNavigate();
-  
+
   const { user } = useAuth();
-  const { cart, removeFromCart, clearCart, decreaseQuantity, addToCart } = useCart();
+  const { cart, removeFromCart, clearCart, addToCart, decreaseQuantity } = useCart();
 
   const total = cart.reduce((acc, item) => {
     const precio = parseFloat(item.precio) || 0;
@@ -29,7 +29,7 @@ function Cart() {
       navigate('/checkout');
     }
   };
-  
+
   const getImage = (item) => {
     return item.url || item.image || item.linkImagen || item.img || "https://via.placeholder.com/150";
   };
@@ -97,34 +97,34 @@ function Cart() {
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mt-3">
-                      
+
                       <div className="input-group input-group-sm" style={{ width: '100px' }}>
-                        <button 
-                            className="btn btn-outline-secondary" 
-                            type="button"
-                            onClick={() => decreaseQuantity(item)} 
+                        <button
+                          className="btn btn-outline-secondary"
+                          type="button"
+                          onClick={() => decreaseQuantity(item.id || item.idProducto)}
                         >
-                            -
+                          -
                         </button>
-                        
+
                         <input
                           type="text"
                           className="form-control text-center"
                           value={item.quantity || 1}
                           readOnly
                         />
-                        
-                        <button 
-                            className="btn btn-outline-secondary" 
-                            type="button"
-                            onClick={() => addToCart(item)} 
+
+                        <button
+                          className="btn btn-outline-secondary"
+                          type="button"
+                          onClick={() => addToCart(item)}
                         >
-                            +
+                          +
                         </button>
                       </div>
 
                       <button
-                        onClick={() => removeFromCart(item)}
+                        onClick={() => removeFromCart(item.id || item.idProducto)}
                         className="btn btn-outline-danger btn-sm border-0"
                         title="Eliminar producto"
                       >

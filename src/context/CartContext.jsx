@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const CartContext = createContext();
-
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
+
     const [cart, setCart] = useState(() => {
         const savedCart = localStorage.getItem('cart');
         return savedCart ? JSON.parse(savedCart) : [];
@@ -23,52 +23,53 @@ export const CartProvider = ({ children }) => {
         cart.findIndex(item => item.id === id || item.idProducto === id);
 
     const addToCart = (product) => {
-        const existingItemIndex = findItemInCart(product.id || product.idProducto);
+        const existingIndex = findItemInCart(product.id || product.idProducto);
 
-        if (existingItemIndex > -1) {
+        if (existingIndex > -1) {
             const newCart = [...cart];
-            newCart[existingItemIndex].quantity = (newCart[existingItemIndex].quantity || 1) + 1;
+            newCart[existingIndex].quantity = (newCart[existingIndex].quantity || 1) + 1;
             setCart(newCart);
         } else {
             setCart([...cart, { ...product, quantity: 1 }]);
         }
     };
 
-    const removeFromCart = (productId, removeAll = false) => {
-        const existingItemIndex = findItemInCart(productId);
+    const decreaseQuantity = (productId) => {
+        const index = findItemInCart(productId);
+        if (index === -1) return;
 
-        if (existingItemIndex === -1) return;
+        const newCart = [...cart];
 
-        const item = cart[existingItemIndex];
-
-        if (removeAll || item.quantity <= 1) {
-            setCart(cart.filter((_, index) => index !== existingItemIndex));
-        } else {
-            const newCart = [...cart];
-            newCart[existingItemIndex].quantity -= 1;
+        if (newCart[index].quantity > 1) {
+            newCart[index].quantity -= 1;
             setCart(newCart);
+        } else {
+            setCart(cart.filter((_, i) => i !== index));
         }
     };
 
+    const removeFromCart = (productId) => {
+        const index = findItemInCart(productId);
+        if (index === -1) return;
+        setCart(cart.filter((_, i) => i !== index));
+    };
+
     const generateVentaRequestDTO = (idUsuario, idMetodoPago, idMetodoEnvio, idEstado) => {
-        const productosDTO = cart.map(item => {
-            const productId = item.id || item.idProducto || item._id;
-            return {
-                idProducto: productId,
-                cantidad: item.quantity || 1,
-            };
-        });
+        const productosDTO = cart.map(item => ({
+            idProducto: item.id || item.idProducto || item._id,
+            cantidad: item.quantity || 1
+        }));
 
         return {
             idUsuario,
             idMetodoPago,
             idMetodoEnvio,
             idEstado,
-            productos: productosDTO,
+            productos: productosDTO
         };
     };
 
-    const clearCartAfterSuccess = () => setCart([]); 
+    const clearCartAfterSuccess = () => setCart([]);
 
     return (
         <CartContext.Provider
@@ -80,7 +81,8 @@ export const CartProvider = ({ children }) => {
                 generateVentaRequestDTO,
                 clearCartAfterSuccess,
                 addToCart,
-                removeFromCart,
+                decreaseQuantity,
+                removeFromCart
             }}
         >
             {children}
