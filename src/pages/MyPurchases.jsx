@@ -28,9 +28,9 @@ function MyPurchases() {
         setLoading(true);
         setError(null);
         try {
-            const userId = Number(user.userId);
+            const idUser = Number(user.idUser);
             const token = user.token;
-            const data = await PurchaseService.getComprasByUserId(userId, token);
+            const data = await PurchaseService.getComprasByidUser(idUser, token);
             setCompras(data);
         } catch (err) {
             setError(err.message || "Ocurrió un error al cargar tu historial de compras.");
