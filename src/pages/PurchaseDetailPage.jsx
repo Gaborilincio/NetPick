@@ -20,18 +20,20 @@ function PurchaseDetailPage() {
 
     useEffect(() => {
         if (!user) {
-            setError("Debes iniciar sesión para ver los detalles de la compra.");
+            setError("Debes iniciar sesión para ver los detalles.");
             setLoading(false);
             return;
         }
-        fetchVenta();
+
+        const token = user.token || "TOKEN_DUMMY"; 
+        fetchVenta(token);
     }, [id, user]);
 
-    const fetchVenta = async () => {
+    const fetchVenta = async (token) => {
         setLoading(true);
         try {
-            const token = user.token;
             const data = await PurchaseService.getPurchaseDetails(id, token);
+            console.log("📦 Detalle recibido:", data); // Para depurar
             setVenta(data);
         } catch (err) {
             setError(err.message || "Error al cargar detalles de la compra.");
@@ -76,11 +78,14 @@ function PurchaseDetailPage() {
         return (
             <Container className="mt-4">
                 <Alert variant="info">Venta no encontrada.</Alert>
+                <Button variant="secondary" onClick={() => navigate(-1)}>
+                    Volver atrás
+                </Button>
             </Container>
         );
     }
-
-    const estadoNombre = venta.estadoVenta?.nombre || "Procesando";
+    const estadoNombre = venta.estadoNombre || venta.estadoVenta?.nombre || "Procesando";
+    const listaProductos = venta.productos || venta.detallesVenta || [];
 
     return (
         <Container className="my-5">
@@ -121,14 +126,25 @@ function PurchaseDetailPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {venta.detallesVenta?.map((item) => (
-                                <tr key={item.idDetalleVenta}>
-                                    <td>{item.producto?.nombre || "Producto"}</td>
-                                    <td>{item.cantidad}</td>
-                                    <td>{formatCurrency(item.producto?.precio || 0)}</td>
-                                    <td>{formatCurrency((item.producto?.precio || 0) * item.cantidad)}</td>
+                            {listaProductos.length > 0 ? (
+                                listaProductos.map((item, index) => (
+                                    <tr key={index}>
+                                        {/* 🚨 AQUÍ ESTABA EL ERROR: Usamos las propiedades del DTO */}
+                                        <td>{item.nombreProducto || item.producto?.nombre || "Producto"}</td>
+                                        <td>{item.cantidad}</td>
+                                        <td>{formatCurrency(item.precioUnitario || item.producto?.precio || 0)}</td>
+                                        <td>
+                                            {formatCurrency(
+                                                (item.precioUnitario || item.producto?.precio || 0) * item.cantidad
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className="text-center">No hay productos en esta orden.</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </Table>
 
