@@ -5,9 +5,7 @@ export const AuthService = {
   register: async (data) => {
     const response = await fetch(`${API_URL}/register`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         nombre: data.nombre,
         correo: data.correo,
@@ -20,16 +18,13 @@ export const AuthService = {
       const errorText = await response.text();
       throw new Error(errorText || "Error en registro");
     }
-
     return await response.text();
   },
 
   login: async (data) => {
     const response = await fetch(`${API_URL}/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         correo: data.correo,
         clave: data.clave,
@@ -45,14 +40,13 @@ export const AuthService = {
     if (json.token) {
       localStorage.setItem("usuario", JSON.stringify(json));
     }
-
     return json;
   },
 
-getCurrentUser: () => {
-    const user = localStorage.getItem("usuario");
-    return user ? JSON.parse(user) : null; 
-},
+  getCurrentUser: () => {
+    const user = localStorage.getItem("usuario");
+    return user ? JSON.parse(user) : null;
+  },
 
   logout: () => {
     localStorage.removeItem("usuario");
@@ -63,10 +57,15 @@ getCurrentUser: () => {
   },
 
   updateProfile: async (userData) => {
-    const fullUser = JSON.parse(localStorage.getItem('usuario'));
-    const token = fullUser?.token; 
+    const currentUser = JSON.parse(localStorage.getItem('usuario'));
+    const token = currentUser?.token;
+    const userId = currentUser?.userId;
 
-    if (!token) throw new Error("Token de autenticación no encontrado.");
+    if (!token) throw new Error("No estás autenticado (Falta token).");
+    const bodyToSend = {
+        ...userData,
+        userId: userId 
+    };
 
     try {
       const response = await fetch(`${API_URL}/profile`, { 
@@ -75,16 +74,19 @@ getCurrentUser: () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` 
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(bodyToSend)
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al actualizar perfil');
+        const errorText = await response.text();
+        throw new Error(errorText || 'Error al actualizar perfil');
       }
+      const updatedUser = await response.json();
+      localStorage.setItem("usuario", JSON.stringify(updatedUser));
 
-      return await response.json(); 
+      return updatedUser; 
     } catch (error) {
+      console.error("Error en updateProfile:", error);
       throw error;
     }
   }
