@@ -16,6 +16,9 @@ function MyPurchases() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+            setLoading(false);
+          console.log("USER:", user);
+            console.log("COMPRAS PRE-FETCH:", compras);
         if (!authLoading && user) {
             fetchCompras();
         } else if (!authLoading && !user) {
@@ -30,7 +33,7 @@ function MyPurchases() {
         try {
             const idUser = Number(user.idUser);
             const token = user.token;
-            const data = await PurchaseService.getComprasByidUser(idUser, token);
+            const data = await PurchaseService.getComprasByUserId(idUser, token);
             setCompras(data);
         } catch (err) {
             setError(err.message || "Ocurrió un error al cargar tu historial de compras.");
