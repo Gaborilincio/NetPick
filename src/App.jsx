@@ -36,7 +36,7 @@ function App() {
                             <Route path="/categorias" element={<Category />} />
                             <Route path="/carrito" element={<Cart />} />
                             <Route path="/checkout" element={<CheckoutPage />} />
-                            <Route path="/historial" element={<MyPurchases />} />
+                            <Route path="/my-purchases" element={<MyPurchases />} />
                             <Route path="/perfil" element={<Profile />} />
                             <Route path="/perfil/editar" element={<EditProfile />} />
                             <Route path="/recuperar" element={<ForgotPassword />} />

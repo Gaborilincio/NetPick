@@ -33,7 +33,7 @@ function NavigationBar() {
         } else if (eventKey === 'profile') {
             navigate('/perfil');
         } else if (eventKey === 'my-purchases') {
-            navigate('/compras');
+            navigate('/my-purchases');
         } else if (eventKey === 'edit-profile') {
             navigate('/perfil/editar');
         } else if (eventKey === 'admin') {
