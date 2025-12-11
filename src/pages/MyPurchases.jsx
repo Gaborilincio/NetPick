@@ -15,16 +15,25 @@ function MyPurchases() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const isUserFullyReady = authLoading === false && user && user.userId && user.token;
+useEffect(() => {
+        const idDelUsuario = user?.userId || user?.id;
+        const tieneToken = user?.token;
+
+        const isUserFullyReady = authLoading === false && user && idDelUsuario && tieneToken;
 
         if (isUserFullyReady) {
+            console.log("Usuario listo. ID:", idDelUsuario);
             fetchCompras();
         } else if (authLoading === false && !user) {
+            console.log("No hay usuario logueado.");
             setError("Debes iniciar sesión para ver tus compras.");
             setLoading(false);
+        } else if (authLoading === false && user) {
+            console.error("Usuario incompleto detectado:", user);
+            setError("Error en datos de sesión. Por favor, relogueate.");
+            setLoading(false);
         }
-    }, [user, authLoading]);
+    }, [user, authLoading])
 
     const fetchCompras = async () => {
         setLoading(true);
