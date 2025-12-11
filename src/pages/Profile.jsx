@@ -53,7 +53,7 @@ function Profile() {
       <div className="text-center mt-4">
         <button 
           className="btn btn-info btn-lg" 
-          onClick={() => navigate('/compras')}
+          onClick={() => navigate('/my-purchases')}
         >
           Ver Historial de Compras
         </button>
