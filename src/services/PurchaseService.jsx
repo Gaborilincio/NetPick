@@ -4,7 +4,7 @@ const METODO_ENVIO_API_URL = "https://netpick-backend.onrender.com/api/v1/metodo
 
 export const PurchaseService = {
 
-    getComprasByUserId: async (userId, token) => { 
+    getComprasByUserId: async (userId, token) => {
         if (!userId) {
             throw new Error("Se requiere el ID de usuario para buscar compras.");
         }
@@ -23,22 +23,33 @@ export const PurchaseService = {
         }
     },
 
-    realizarCompra: async (ventaRequestDTO) => {
+    realizarCompra: async (ventaRequestDTO, token) => {
+        const url = `${API_BASE_URL}/realizarCompra`;
+
         try {
-            const response = await fetch(`${API_BASE_URL}/checkout`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(ventaRequestDTO),
+                body: JSON.stringify(ventaRequestDTO)
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Error HTTP: ${response.status}`);
-            }
+                let errorMessage = `Error HTTP ${response.status}: ${response.statusText}`;
 
-            return await response.json();
+                try {
+                    const errorBody = await response.json();
+                    errorMessage = errorBody.message || JSON.stringify(errorBody);
+                } catch (e) {
+                    const textError = await response.text();
+                    errorMessage = `Error ${response.status}: ${textError.substring(0, 100)}...`;
+                }
+                throw new Error(errorMessage);
+            }
+            const data = await response.json();
+            return data;
         } catch (error) {
             console.error("Error al realizar la compra:", error);
             throw error;
