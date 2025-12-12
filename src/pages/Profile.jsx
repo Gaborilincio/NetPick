@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'; // 1. Importar Hooks
+import React, { useState, useEffect } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { PurchaseService } from '../services/PurchaseService'; // 2. Importar el Servicio
+import { PurchaseService } from '../services/PurchaseService'; 
 import UserProfileSection from '../components/organisms/UserProfileSection';
 import '../styles/Profile.css';
 
